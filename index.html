@@ -1283,6 +1283,25 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
   .ag-goal-title { font-size:14px; }
   .ag-category-title { font-size:13px; }
 
+  /* === SPRINT HEADER === */
+  .sprint-header {
+    flex-direction:column; align-items:flex-start; gap:12px; padding:16px;
+  }
+  .sprint-header-controls {
+    flex-direction:column !important; align-items:flex-start !important; width:100%; gap:10px !important;
+  }
+  .sprint-header-controls .btn { width:100%; text-align:center; }
+  .sprint-info h2 { font-size:20px; white-space:nowrap; }
+  .sprint-info .sprint-dates { font-size:13px; }
+  .sprint-weeks {
+    flex-wrap:wrap; gap:6px; width:100%;
+  }
+  .sprint-week-dot { width:28px; height:28px; font-size:11px; }
+  .sprint-snapshot { padding:14px; }
+  .sprint-snap-items { grid-template-columns:1fr; }
+  .sprint-snap-header h3 { font-size:15px; }
+  .sprint-snap-item { font-size:13px; padding:8px 10px; }
+
   /* === GOALS TAB === */
   .goals-grid { grid-template-columns:1fr; gap:12px; }
   .goal-card { padding:16px; }
@@ -1297,7 +1316,6 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
   .gm-card .gm-number { font-size:24px; }
   .gm-card .gm-label { font-size:12px; }
   .gm-card .gm-sub { font-size:11px; }
-  .sprint-week-dot { width:22px; height:22px; font-size:10px; }
 
   /* MOM tracker — scrollable */
   .mom-grid { gap:6px; overflow-x:auto; flex-wrap:nowrap; padding-bottom:6px; }
@@ -1519,7 +1537,7 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
       <h2 id="goalSprintTitle">12-Week Sprint</h2>
       <div class="sprint-dates" id="goalSprintDates"></div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px">
+    <div class="sprint-header-controls" style="display:flex;align-items:center;gap:12px">
       <div class="sprint-weeks" id="sprintWeekDots"></div>
       <button class="btn btn-outline btn-sm" onclick="renderSprintGoalCheckboxes();openModal('sprint')">Edit Sprint</button>
       <button class="btn btn-primary btn-sm" onclick="openModal('goal')">+ Add Goal</button>
