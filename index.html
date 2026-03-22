@@ -1150,45 +1150,48 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 
 /* RESPONSIVE — MOBILE */
 @media (max-width:600px) {
+  /* === BASE: readable fonts === */
+  body { font-size:16px; -webkit-text-size-adjust:100%; }
+
   /* === HEADER: compact two-row === */
   .header {
-    padding:10px 14px; gap:6px; flex-wrap:wrap;
+    padding:12px 16px; gap:8px; flex-wrap:wrap;
     position:sticky; top:0; z-index:100;
   }
-  .header-left { gap:6px; width:100%; }
-  .logo { font-size:16px; }
-  .header-date { font-size:10px; display:none; }
+  .header-left { gap:8px; width:100%; }
+  .logo { font-size:20px; }
+  .header-date { display:none; }
   .header-right {
-    width:100%; gap:6px; justify-content:space-between;
+    width:100%; gap:8px; justify-content:space-between;
   }
-  .header-right .btn { padding:6px 10px; font-size:10px; flex:1; text-align:center; }
+  .header-right .btn { padding:10px 12px; font-size:13px; flex:1; text-align:center; }
   #syncStatus { display:none; }
 
   /* === SPRINT BANNER: compact === */
-  .sprint-banner { padding:6px 14px; gap:8px; font-size:10px; }
-  .sprint-banner .sprint-label { font-size:11px; }
+  .sprint-banner { padding:8px 16px; gap:10px; font-size:13px; }
+  .sprint-banner .sprint-label { font-size:14px; }
   .sprint-progress-bar { max-width:80px; }
 
   /* === TABS: scrollable pill strip === */
   .tabs {
-    padding:6px 10px; overflow-x:auto; -webkit-overflow-scrolling:touch;
-    gap:4px; scrollbar-width:none;
+    padding:8px 12px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+    gap:6px; scrollbar-width:none;
   }
   .tabs::-webkit-scrollbar { display:none; }
   .tab-btn {
-    padding:7px 14px; font-size:11px; white-space:nowrap;
+    padding:10px 18px; font-size:14px; white-space:nowrap;
     flex-shrink:0; border-radius:20px; border-bottom:none;
   }
   .tab-btn.active {
     background:var(--terra); color:#fff; border-bottom:none;
   }
-  .tab-content { padding:12px; }
+  .tab-content { padding:14px; }
 
   /* === WEEKLY VIEW: horizontal scroll days === */
-  .week-header { margin-bottom:10px; }
-  .week-nav { gap:6px; width:100%; justify-content:space-between; }
-  .week-nav button { padding:5px 10px; font-size:14px; }
-  .week-title { font-size:14px; }
+  .week-header { margin-bottom:12px; }
+  .week-nav { gap:8px; width:100%; justify-content:space-between; }
+  .week-nav button { padding:8px 14px; font-size:18px; }
+  .week-title { font-size:18px; }
 
   .week-layout { flex-direction:column; gap:10px; }
   .week-main { min-width:0; overflow:visible; }
@@ -1226,132 +1229,170 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
   }
 
   /* Day column internals */
-  .day-column { padding:12px; }
-  .day-name { font-size:11px; }
-  .day-date { font-size:22px; }
+  .day-column { padding:14px; }
+  .day-name { font-size:13px; letter-spacing:1px; }
+  .day-date { font-size:28px; }
   .day-column .day-tasks { min-height:60px; }
 
-  /* === SIDEBAR: stacks below, compact === */
+  /* === SIDEBAR: stacks below === */
   .week-sidebar {
-    width:100%; flex-direction:column; gap:8px;
+    width:100%; flex-direction:column; gap:10px;
   }
   .week-sidebar > * { min-width:auto; }
-  .sidebar-widget { padding:12px; }
-  .sidebar-widget h4 { font-size:12px; }
+  .sidebar-widget { padding:14px; }
+  .sidebar-widget h4 { font-size:15px; }
+  .sidebar-sprint-goal { font-size:12px; }
+  .sidebar-sprint-action { font-size:14px; }
+  .sidebar-backlog-item { font-size:14px; padding:8px 0; }
 
   /* === TASK CARDS === */
-  .task-card { padding:10px 10px 10px 12px; margin-bottom:6px; }
-  .task-card .card-title { font-size:13px; }
-  .task-card .card-meta { gap:4px; }
-  .task-card .card-top-actions { gap:2px; }
-  .category-tag { font-size:8px; padding:2px 6px; }
-  .status-badge { font-size:8px; padding:2px 6px; }
-  .task-card .card-steps { font-size:10px; }
+  .task-card { padding:12px 12px 12px 14px; margin-bottom:8px; }
+  .task-card .card-title { font-size:15px; }
+  .task-card .card-meta { gap:6px; margin-top:8px; }
+  .task-card .card-top-actions { gap:4px; }
+  .task-card .star-btn { font-size:20px; }
+  .category-tag { font-size:11px; padding:4px 8px; }
+  .status-badge { font-size:11px; padding:4px 8px; }
+  .task-card .card-steps { font-size:13px; }
 
   /* === MODALS: near full screen === */
-  .modal-overlay { padding:10px; }
+  .modal-overlay { padding:8px; }
   .modal {
-    width:100%; max-width:none; padding:20px 16px;
+    width:100%; max-width:none; padding:22px 18px;
     max-height:92vh; border-radius:var(--radius);
   }
-  .modal-title { font-size:18px; margin-bottom:14px; }
-  .form-group { margin-bottom:10px; }
-  .form-group label { font-size:12px; }
+  .modal-title { font-size:22px; margin-bottom:16px; }
+  .form-group { margin-bottom:14px; }
+  .form-group label { font-size:14px; }
   .form-group input, .form-group select, .form-group textarea {
     font-size:16px; /* prevents iOS zoom on focus */
-    padding:10px;
+    padding:12px;
   }
-  .form-actions { gap:8px; }
-  .form-actions .btn { flex:1; }
+  .form-actions { gap:10px; }
+  .form-actions .btn { flex:1; padding:12px; font-size:15px; }
 
   /* === PROJECTS TAB === */
-  .cat-cards-grid { grid-template-columns:1fr 1fr; gap:8px; }
-  .cat-card-click { padding:12px; }
-  .cat-card-click h4 { font-size:12px; }
-  .goals-accordion-header { padding:10px; }
-  .goals-accordion-header h3 { font-size:13px; }
-  .goals-accordion-body { padding:6px; }
-  .ag-goal-title { font-size:12px; }
+  .cat-cards-grid { grid-template-columns:1fr 1fr; gap:10px; }
+  .cat-card-click { padding:14px; }
+  .cat-card-click h4 { font-size:14px; }
+  .cc-count { font-size:12px; }
+  .cc-preview-task { font-size:13px; }
+  .goals-accordion-header { padding:12px; }
+  .goals-accordion-header h3 { font-size:16px; }
+  .goals-accordion-body { padding:8px; }
+  .ag-goal-title { font-size:14px; }
+  .ag-category-title { font-size:13px; }
 
   /* === GOALS TAB === */
-  .goals-grid { grid-template-columns:1fr; gap:10px; }
-  .goal-card { padding:14px; }
-  .goal-card h3 { font-size:16px; }
+  .goals-grid { grid-template-columns:1fr; gap:12px; }
+  .goal-card { padding:16px; }
+  .goal-card h3 { font-size:20px; }
+  .goal-card .goal-category { font-size:14px; }
+  .goal-card .goal-percent { font-size:15px; }
   .goal-card .goal-actions { flex-wrap:wrap; }
-  .gm-card { padding:10px 8px; }
-  .gm-card .gm-number { font-size:20px; }
-  .gm-card .gm-label { font-size:10px; }
-  .sprint-week-dot { width:18px; height:18px; font-size:8px; }
+  .goal-card .goal-actions .btn { font-size:14px; padding:10px 14px; }
+  .goal-why { font-size:14px; }
+  .goal-section-label { font-size:13px; }
+  .gm-card { padding:14px 10px; }
+  .gm-card .gm-number { font-size:24px; }
+  .gm-card .gm-label { font-size:12px; }
+  .gm-card .gm-sub { font-size:11px; }
+  .sprint-week-dot { width:22px; height:22px; font-size:10px; }
 
   /* MOM tracker — scrollable */
-  .mom-grid { gap:4px; overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; }
-  .mom-month { min-width:55px; padding:6px 4px; }
-  .mom-month input { width:45px; font-size:11px; padding:4px; }
-  .mom-month-label { font-size:9px; }
+  .mom-grid { gap:6px; overflow-x:auto; flex-wrap:nowrap; padding-bottom:6px; }
+  .mom-month { min-width:65px; padding:8px 6px; }
+  .mom-month input { width:55px; font-size:14px; padding:6px; }
+  .mom-month-label { font-size:11px; }
 
   /* Streak tracker */
-  .streak-grid { gap:2px; overflow-x:auto; flex-wrap:wrap; }
-  .streak-cell { width:13px; height:13px; font-size:6px; }
-  .streak-months { gap:4px; }
-  .streak-month { padding:4px 6px; font-size:10px; }
+  .streak-grid { gap:3px; overflow-x:auto; flex-wrap:wrap; }
+  .streak-cell { width:16px; height:16px; font-size:8px; }
+  .streak-label { font-size:13px; }
+  .streak-months { gap:6px; }
+  .streak-month { padding:6px 8px; font-size:12px; }
 
   /* Phased tracker */
-  .phase-weeks { gap:4px; }
-  .phase-week { width:26px; height:26px; }
-  .phase-week .pw-num { font-size:8px; }
-  .phase-header { font-size:12px; }
+  .phase-weeks { gap:5px; }
+  .phase-week { width:32px; height:32px; }
+  .phase-week .pw-num { font-size:10px; }
+  .phase-header { font-size:14px; }
+  .phase-count { font-size:12px; }
 
   /* Weight tracker */
-  .wt-row { flex-direction:column; gap:8px; }
+  .wt-row { flex-direction:column; gap:10px; }
   .wt-arrow { display:none; }
-  .wt-field input { width:100%; }
+  .wt-field input { width:100%; font-size:16px; padding:10px; }
+  .wt-field label { font-size:13px; }
+  .wt-summary { font-size:15px; }
+
+  /* Numeric tracker */
+  .numeric-tracker input { font-size:16px; padding:10px; }
+  .nt-label { font-size:14px; }
 
   /* Checklist */
-  .checklist-item { font-size:13px; }
-  .checklist-add input { font-size:14px; }
+  .checklist-item { font-size:15px; padding:6px 0; }
+  .checklist-counter { font-size:14px; }
+  .checklist-add input { font-size:16px; padding:10px; }
+  .checklist-add .btn { padding:10px 14px; }
 
   /* === FRIENDS === */
-  .friends-layout { grid-template-columns:1fr; gap:8px; }
+  .friends-layout { grid-template-columns:1fr; gap:10px; }
   .friends-sidebar {
-    flex-direction:row; overflow-x:auto; gap:4px;
-    -webkit-overflow-scrolling:touch; padding-bottom:4px;
+    flex-direction:row; overflow-x:auto; gap:6px;
+    -webkit-overflow-scrolling:touch; padding-bottom:6px;
   }
   .friends-sidebar::-webkit-scrollbar { display:none; }
-  .friends-sidebar button { white-space:nowrap; flex-shrink:0; font-size:11px; padding:6px 10px; }
-  .friend-card { padding:12px; }
-  .friend-card h3 { font-size:14px; }
+  .friends-sidebar button { white-space:nowrap; flex-shrink:0; font-size:14px; padding:10px 14px; }
+  .friend-card { padding:14px; }
+  .friend-card h3 { font-size:16px; }
+  .friend-card .friend-meta { font-size:13px; }
 
   /* === HABITS === */
-  .habit-section { overflow-x:auto; }
-  .habit-grid-table { font-size:10px; }
-  .habit-grid-table th, .habit-grid-table td { padding:3px 4px; }
+  .habit-section { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .habit-grid-table { font-size:13px; }
+  .habit-grid-table th, .habit-grid-table td { padding:6px 5px; }
+  .habit-grid-table .habit-name { font-size:13px; }
 
   /* === ALL TASKS === */
-  .tasks-toolbar { flex-direction:column; gap:6px; }
-  .tasks-toolbar input, .tasks-toolbar select { font-size:14px; }
-  .task-row { font-size:12px; padding:10px 8px; gap:4px; flex-wrap:wrap; }
+  .tasks-toolbar { flex-direction:column; gap:8px; }
+  .tasks-toolbar input, .tasks-toolbar select { font-size:16px; padding:10px; }
+  .task-row { font-size:15px; padding:12px 10px; gap:6px; flex-wrap:wrap; }
+  .task-row .task-name { font-size:15px; }
 
   /* === SPRINT PLANNER === */
-  .sprint-weekly-planner-layout { gap:10px; }
-  .swp-current-header { flex-wrap:wrap; gap:6px; }
-  .swp-current-header h3 { font-size:15px; }
-  .swb-goal-label { font-size:11px; }
-  .swb-action-text { font-size:12px; }
+  .sprint-weekly-planner-layout { gap:12px; }
+  .swp-current-header { flex-wrap:wrap; gap:8px; }
+  .swp-current-header h3 { font-size:18px; }
+  .swb-goal-label { font-size:14px; }
+  .swb-action-text { font-size:14px; }
+  .swb-add-action input { font-size:16px; padding:10px; }
 
   /* === WEEKLY REVIEW === */
-  .wr-question { font-size:13px; }
-  .wr-textarea { font-size:14px; min-height:60px; }
-  .wr-checklist label { font-size:13px; }
+  .wr-question { font-size:16px; font-weight:600; }
+  .wr-textarea { font-size:16px; min-height:70px; padding:12px; }
+  .wr-checklist label { font-size:15px; gap:8px; }
+  .wr-checklist input[type="checkbox"] { width:20px; height:20px; }
 
   /* === GLOBAL MOBILE TWEAKS === */
-  .btn { padding:8px 12px; font-size:12px; }
-  .btn-sm { padding:5px 10px; font-size:10px; }
+  .btn { padding:10px 16px; font-size:14px; }
+  .btn-sm { padding:8px 12px; font-size:12px; }
   h1, h2, h3, h4 { word-break:break-word; }
 
   /* Routines */
-  .sidebar-routine { padding:10px; }
-  .sidebar-routine-title { font-size:12px; }
-  .sidebar-routine-steps { font-size:10px; }
+  .sidebar-routine { padding:12px; }
+  .sidebar-routine-title { font-size:15px; }
+  .sidebar-routine-cue { font-size:13px; }
+  .sidebar-routine-steps { font-size:13px; line-height:2; }
+
+  /* Daily habits in day columns */
+  .daily-habits { font-size:13px; }
+  .habit-check { font-size:13px; gap:8px; margin-bottom:5px; }
+  .dh-toggle { font-size:13px; padding:6px 0; }
+
+  /* Add event / backlog dropdown */
+  .add-event-btn { font-size:13px; }
+  select { font-size:14px; }
 }
 
 /* EMPTY STATES */
