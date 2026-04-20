@@ -5,9 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Life Command Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<!-- Firebase SDK (async — won't block page if offline) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" async></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" async></script>
+<!-- Firebase SDK v10 modular — loaded as ES module, exposes pieces on window.__firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc }
+    from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7Z0p0DvUx1QWnC5VnuVMieouvpiHEHI4",
+    authDomain: "life-command-center-51d4e.firebaseapp.com",
+    projectId: "life-command-center-51d4e",
+    storageBucket: "life-command-center-51d4e.firebasestorage.app",
+    messagingSenderId: "284100656529",
+    appId: "1:284100656529:web:d7819e78910fb19710ae30"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    window.__firebase = {
+      auth: getAuth(app),
+      db: getFirestore(app),
+      googleProvider: new GoogleAuthProvider(),
+      signInWithPopup, signOut, onAuthStateChanged,
+      doc, getDoc, setDoc
+    };
+    window.dispatchEvent(new Event('firebase-ready'));
+  } catch (e) {
+    console.warn('Firebase init failed:', e);
+  }
+</script>
 <style>
 :root {
   --bg: #f5f0e8;
@@ -1454,6 +1482,7 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
   </div>
   <div class="header-right">
     <span id="syncStatus" style="font-size:11px;cursor:default" title="Cloud sync status">💾 Local only</span>
+    <span id="authControls" style="display:inline-flex;align-items:center;gap:8px"></span>
     <button class="btn btn-primary" onclick="renderTaskGoalOptions();openModal('task')">+ Add Task</button>
     <button class="btn btn-outline" onclick="openHabitModalFor('daily')">+ Habit</button>
     <button class="btn btn-outline" onclick="openModal('friend')">+ Friend</button>
@@ -2124,112 +2153,157 @@ function migrateGoals(p) {
   delete p.sprint.sprintItems;
 }
 // ============================================================
-// FIREBASE SYNC
+// FIREBASE SYNC (v10 modular — Firestore + Google Auth)
 // ============================================================
-const FIREBASE_CONFIG = {
-  // 🔥 PASTE YOUR FIREBASE CONFIG HERE (see setup instructions)
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
-};
-
-let firebaseReady = false;
-let firebaseDb = null;
-let _syncPaused = false; // prevents loop when receiving remote data
+let _fb = null;               // handles from window.__firebase
+let _currentUser = null;
+let _syncPaused = false;      // prevents write-loop while applying remote state
+let _saveTimeout = null;
+let _pendingRemoteWrite = false;
 
 function initFirebase() {
-  if (!FIREBASE_CONFIG.apiKey || !FIREBASE_CONFIG.databaseURL) {
-    console.log('Firebase not configured — using localStorage only');
-    updateSyncIndicator('local');
-    return;
-  }
-  if (typeof firebase === 'undefined') {
-    console.log('Firebase SDK not loaded — using localStorage only');
-    updateSyncIndicator('local');
-    // Retry once after SDK might finish loading
-    setTimeout(() => { if (typeof firebase !== 'undefined') initFirebase(); }, 3000);
-    return;
-  }
+  if (window.__firebase) onFirebaseReady();
+  else window.addEventListener('firebase-ready', onFirebaseReady, { once: true });
+  updateSyncIndicator('signed-out');
+}
+
+function onFirebaseReady() {
+  _fb = window.__firebase;
+  if (!_fb) { updateSyncIndicator('local'); return; }
+  _fb.onAuthStateChanged(_fb.auth, async (user) => {
+    _currentUser = user || null;
+    renderAuthUI();
+    if (user) {
+      await initialSyncOnSignIn(user);
+    } else {
+      updateSyncIndicator('signed-out');
+    }
+  });
+}
+
+async function signIn() {
+  if (!_fb) return;
   try {
-    firebase.initializeApp(FIREBASE_CONFIG);
-    firebaseDb = firebase.database();
-    firebaseReady = true;
-    console.log('Firebase connected ✓');
-
-    // Listen for remote changes
-    firebaseDb.ref('lcc_state').on('value', (snapshot) => {
-      if (_syncPaused) return;
-      const remoteData = snapshot.val();
-      if (!remoteData) return;
-      // Only apply if remote is newer
-      const remoteTime = remoteData._lastSaved || 0;
-      const localTime = state._lastSaved || 0;
-      if (remoteTime > localTime) {
-        console.log('Syncing from cloud...');
-        _syncPaused = true;
-        state = remoteData;
-        localStorage.setItem('lcc_state', JSON.stringify(state));
-        renderWeek(); renderGoals(); renderHabits(); renderFriends(); renderAllTasks(); renderProjects();
-        updateSyncIndicator('synced');
-        _syncPaused = false;
-      }
-    });
-
-    // Initial sync — push local to cloud if cloud is empty
-    firebaseDb.ref('lcc_state').once('value', (snapshot) => {
-      if (!snapshot.val()) {
-        saveToFirebase();
-      }
-      updateSyncIndicator('synced');
-    });
-  } catch(e) {
-    console.warn('Firebase init failed:', e);
+    await _fb.signInWithPopup(_fb.auth, _fb.googleProvider);
+  } catch (e) {
+    console.warn('Sign-in failed:', e);
+    alert('Sign-in failed: ' + (e.message || e));
   }
 }
 
-function saveToFirebase() {
-  if (!firebaseReady || _syncPaused) return;
-  firebaseDb.ref('lcc_state').set(state).then(() => {
-    updateSyncIndicator('synced');
-  }).catch(err => {
-    console.warn('Firebase save error:', err);
-    updateSyncIndicator('error');
-  });
+async function signOutUser() {
+  if (!_fb) return;
+  try { await _fb.signOut(_fb.auth); } catch (e) { console.warn('Sign-out failed:', e); }
+}
+
+function renderAuthUI() {
+  const el = document.getElementById('authControls');
+  if (!el) return;
+  if (_currentUser) {
+    const name = _currentUser.displayName || _currentUser.email || 'Signed in';
+    el.innerHTML =
+      '<span style="font-size:12px;color:var(--text-dim)">' + esc(name) + '</span>' +
+      '<button class="btn btn-outline" style="padding:6px 10px;font-size:12px" onclick="signOutUser()">Sign out</button>';
+  } else {
+    el.innerHTML =
+      '<button class="btn btn-outline" style="padding:6px 12px;font-size:12px" onclick="signIn()">Sign in with Google</button>';
+  }
+}
+
+function docRefForUser(uid) {
+  return _fb.doc(_fb.db, 'users', uid, 'data', 'state');
+}
+
+async function initialSyncOnSignIn(user) {
+  if (!_fb) return;
+  updateSyncIndicator('syncing');
+  try {
+    const snap = await _fb.getDoc(docRefForUser(user.uid));
+    const remote = snap.exists() ? snap.data() : null;
+    const localTime = state.updatedAt || 0;
+    const remoteTime = remote ? (remote.updatedAt || 0) : 0;
+
+    if (remote && remote.state && remoteTime > localTime) {
+      // Remote is newer — adopt it
+      _syncPaused = true;
+      state = remote.state;
+      if (!state.habitLog) state.habitLog = {};
+      state.updatedAt = remoteTime;
+      localStorage.setItem('lcc_state', JSON.stringify(state));
+      renderAll();
+      _syncPaused = false;
+      updateSyncIndicator('saved');
+    } else {
+      // Local is newer (or cloud empty) — push up
+      await writeRemoteNow();
+    }
+  } catch (e) {
+    console.warn('Initial sync failed:', e);
+    _pendingRemoteWrite = true;
+    updateSyncIndicator('offline');
+  }
+}
+
+async function writeRemoteNow() {
+  if (!_fb || !_currentUser) return;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    _pendingRemoteWrite = true;
+    updateSyncIndicator('offline');
+    return;
+  }
+  try {
+    updateSyncIndicator('syncing');
+    await _fb.setDoc(docRefForUser(_currentUser.uid), {
+      state: state,
+      updatedAt: state.updatedAt || Date.now()
+    });
+    _pendingRemoteWrite = false;
+    updateSyncIndicator('saved');
+  } catch (e) {
+    console.warn('Firestore write failed:', e);
+    _pendingRemoteWrite = true;
+    updateSyncIndicator('offline');
+  }
+}
+
+function renderAll() {
+  renderWeek(); renderGoals(); renderHabits(); renderFriends(); renderAllTasks(); renderProjects();
 }
 
 function updateSyncIndicator(status) {
   const el = document.getElementById('syncStatus');
   if (!el) return;
-  if (status === 'synced') {
-    el.textContent = '☁️ Synced';
-    el.style.color = 'var(--sage)';
-  } else if (status === 'saving') {
-    el.textContent = '☁️ Saving...';
-    el.style.color = 'var(--gold)';
-  } else if (status === 'error') {
-    el.textContent = '⚠️ Offline';
-    el.style.color = 'var(--rose)';
-  } else {
-    el.textContent = '💾 Local only';
-    el.style.color = 'var(--text-faint)';
+  const map = {
+    'signed-out': { text: '🔒 Signed out',  color: 'var(--text-faint)' },
+    'syncing':    { text: '☁️ Syncing…',     color: 'var(--gold)' },
+    'saved':      { text: '✓ Saved',         color: 'var(--sage)' },
+    'offline':    { text: '⚠️ Offline',      color: 'var(--rose)' },
+    'local':      { text: '💾 Local only',   color: 'var(--text-faint)' }
+  };
+  const m = map[status] || map.local;
+  el.textContent = m.text;
+  el.style.color = m.color;
+}
+
+function save() {
+  state.updatedAt = Date.now();
+  // localStorage write — always first, always synchronous (offline-first cache)
+  try { localStorage.setItem('lcc_state', JSON.stringify(state)); } catch (e) { console.warn('localStorage save failed:', e); }
+  if (_syncPaused) return;
+  if (_fb && _currentUser) {
+    updateSyncIndicator('syncing');
+    clearTimeout(_saveTimeout);
+    _saveTimeout = setTimeout(writeRemoteNow, 500);
   }
 }
 
-let _saveTimeout = null;
-function save() {
-  state._lastSaved = Date.now();
-  localStorage.setItem('lcc_state', JSON.stringify(state));
-  // Debounce Firebase writes (save at most once per second)
-  if (firebaseReady) {
-    updateSyncIndicator('saving');
-    clearTimeout(_saveTimeout);
-    _saveTimeout = setTimeout(saveToFirebase, 1000);
-  }
-}
+// Flush any queued write when we come back online
+window.addEventListener('online', () => {
+  if (_currentUser && _pendingRemoteWrite) writeRemoteNow();
+});
+window.addEventListener('offline', () => {
+  if (_currentUser) updateSyncIndicator('offline');
+});
 function genId() { return state.nextId++; }
 
 // ============================================================
@@ -3698,6 +3772,7 @@ function getHabitsForDayOfWeek(dayIdx, forDate) {
 
 // Click cycles: empty → ★ → exempt (—) → empty
 function toggleHabitDay(dk, habitId) {
+  if (!state.habitLog) state.habitLog = {};
   const key = dk + '_' + habitId;
   const exemptKey = key + '_exempt';
   if (state.habitLog[exemptKey]) {
@@ -3912,12 +3987,14 @@ function renderMonthlyHabits() {
 }
 
 function toggleWeeklyHabit(wk, habitId) {
+  if (!state.habitLog) state.habitLog = {};
   const key = wk + '_' + habitId;
   state.habitLog[key] = !state.habitLog[key];
   save(); renderHabits();
 }
 
 function toggleMonthlyHabit(logKey, habitId) {
+  if (!state.habitLog) state.habitLog = {};
   state.habitLog[logKey] = !state.habitLog[logKey];
   if (state.habitLog[logKey]) {
     state.habitLog[logKey + '_date'] = todayKey();
