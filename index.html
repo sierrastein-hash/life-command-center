@@ -873,6 +873,39 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .month-cell.future { opacity:0.5; }
 @media (max-width:600px) { .months-grid { grid-template-columns:repeat(4, 1fr); } }
 
+/* ROOMS goal (Home Renovations) — sectioned task lists by room */
+.rooms-tracker { margin:12px 0; }
+.rooms-summary { font-size:12px; color:var(--text-mid); margin-bottom:10px; padding:8px 12px; background:var(--surface); border-radius:8px; }
+.rooms-summary strong { color:var(--terra); font-size:14px; font-weight:700; }
+.rooms-empty { font-size:12px; color:var(--text-faint); font-style:italic; text-align:center; padding:14px; background:var(--surface); border-radius:8px; margin-bottom:10px; }
+.room-block { background:var(--surface); border:1px solid var(--border-light); border-radius:10px; padding:10px 12px; margin-bottom:10px; transition:all 0.15s; }
+.room-block:focus-within { border-color:var(--terra); }
+.room-block.complete { background:var(--terra-glow); border-color:var(--terra); }
+.room-head { display:flex; align-items:center; gap:8px; padding-bottom:8px; border-bottom:1px solid var(--border); margin-bottom:8px; }
+.room-name { flex:1; padding:4px 8px; border:1px solid transparent; border-radius:4px; font-size:14px; font-weight:600; font-family:'Playfair Display',serif; background:transparent; color:var(--text); min-width:0; }
+.room-name:focus, .room-name:hover { border-color:var(--border); background:var(--card); outline:none; }
+.room-name::placeholder { color:var(--text-faint); font-style:italic; font-weight:400; }
+.room-count { font-size:11px; font-weight:600; color:var(--terra); flex-shrink:0; }
+.room-block.complete .room-count { color:var(--sage); }
+.room-head .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:16px; flex-shrink:0; }
+.room-head .chip-x:hover { color:var(--plum); }
+.room-tasks { display:flex; flex-direction:column; gap:2px; margin-bottom:6px; }
+.room-task { display:flex; align-items:center; gap:8px; padding:4px 6px; border-radius:4px; }
+.room-task:hover { background:var(--card); }
+.room-task input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; flex-shrink:0; }
+.rt-name { flex:1; padding:3px 6px; border:1px solid transparent; border-radius:4px; font-size:13px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); min-width:0; }
+.rt-name:focus, .rt-name:hover { border-color:var(--border); background:var(--card); outline:none; }
+.rt-name::placeholder { color:var(--text-faint); font-style:italic; }
+.room-task.checked .rt-name { text-decoration:line-through; color:var(--text-faint); }
+.room-task .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:14px; flex-shrink:0; opacity:0; transition:opacity 0.15s; }
+.room-task:hover .chip-x { opacity:1; }
+.room-task .chip-x:hover { color:var(--plum); }
+.room-add { display:flex; gap:6px; padding-top:6px; border-top:1px dashed var(--border); }
+.room-add input { flex:1; padding:5px 8px; border:1px solid var(--border); border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:var(--card); color:var(--text); }
+.room-add input::placeholder { color:var(--text-faint); }
+.room-add input:focus { border-color:var(--terra); outline:none; }
+.rooms-add-btn { width:100%; font-size:12px; margin-top:4px; }
+
 /* FEED goal (multiList rendered as chronological feed — Denver) */
 .feed-tracker { margin:12px 0; }
 .feed-header { display:flex; gap:14px; padding:10px 12px; background:var(--surface); border-radius:8px; margin-bottom:8px; }
@@ -2084,9 +2117,12 @@ function defaultState() {
         { key:'events', label:'Events', icon:'🎟️', target:4, items:[] },
         { key:'restaurants', label:'Restaurants', icon:'🍽️', target:4, items:[] }
       ] },
-      { id:209, title:'Complete Home Renovations', category:'home', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[
-        {name:'Bathrooms',done:false},{name:'Laundry room',done:false},{name:'Doors',done:false},{name:'Final touch-ups',done:false}
-      ], checklistTarget:4, checklistUnit:'projects' },
+      { id:209, title:'Complete Home Renovations', category:'home', goalType:'rooms', isActive:false, linkedHabits:[], rooms:[
+        { id:'room-bathrooms', name:'Bathrooms', tasks:[] },
+        { id:'room-laundry', name:'Laundry Room', tasks:[] },
+        { id:'room-doors', name:'Doors', tasks:[] },
+        { id:'room-touchups', name:'Final Touch-ups', tasks:[] }
+      ] },
       { id:212, title:'Plan 2027 Africa 30th Birthday Trip', category:'fun', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[
         {name:'Research destinations',done:false},{name:'Set budget',done:false},{name:'Book flights & accommodations',done:false},{name:'Plan itinerary',done:false}
       ], checklistTarget:4, checklistUnit:'steps' }
@@ -2202,7 +2238,7 @@ function migrateRoutines(p) {
 function migrateGoals(p) {
   if (!p.goals) p.goals = [];
   // Force reload goals from defaults if version is outdated
-  if ((p._goalVersion || 0) < 11) {
+  if ((p._goalVersion || 0) < 12) {
     const ds = defaultState();
     // Preserve user-entered data where possible
     const oldGoalMap = {};
@@ -2274,6 +2310,27 @@ function migrateGoals(p) {
       if (ng.goalType === 'mom') {
         ng.momData = old.momData || {};
       }
+      if (ng.goalType === 'rooms') {
+        // Carry forward existing rooms structure
+        if (Array.isArray(old.rooms) && old.rooms.length > 0) {
+          ng.rooms = old.rooms.map(r => ({
+            id: r.id || 'room-' + Math.random().toString(36).slice(2,9),
+            name: r.name || '',
+            tasks: Array.isArray(r.tasks) ? r.tasks.map(t => ({
+              id: t.id || 'rt-' + Math.random().toString(36).slice(2,9),
+              name: t.name || '',
+              done: !!t.done
+            })) : []
+          }));
+        } else if (old.goalType === 'checklist' && Array.isArray(old.checklistItems) && old.checklistItems.length > 0) {
+          // Convert old checklist items into rooms (each item becomes a room name, no tasks yet)
+          ng.rooms = old.checklistItems.map(ci => ({
+            id: 'room-' + Math.random().toString(36).slice(2,9),
+            name: ci.name || '',
+            tasks: []
+          }));
+        }
+      }
       if (ng.goalType === 'checklist' && old.checklistItems && old.checklistItems.length > 0) {
         ng.checklistItems = ng.checklistItems.map((nci, i) => {
           const oci = old.checklistItems[i];
@@ -2291,7 +2348,7 @@ function migrateGoals(p) {
       if (old.why) ng.why = old.why;
       return ng;
     });
-    p._goalVersion = 11;
+    p._goalVersion = 12;
     if (p.nextId < 213) p.nextId = 213;
     // Ensure sprint structure
     if (!p.sprint) p.sprint = ds.sprint;
@@ -2322,6 +2379,14 @@ function migrateGoals(p) {
       delete g.workoutData; delete g.workoutWeeks; delete g.workoutMin; delete g.workoutMax;
     }
     if (g.goalType === 'months' && (!g.monthsData || typeof g.monthsData !== 'object')) g.monthsData = {};
+    if (g.goalType === 'rooms') {
+      if (!Array.isArray(g.rooms)) g.rooms = [];
+      g.rooms.forEach(r => {
+        if (!r.id) r.id = 'room-' + Math.random().toString(36).slice(2,9);
+        if (!Array.isArray(r.tasks)) r.tasks = [];
+        r.tasks.forEach(t => { if (!t.id) t.id = 'rt-' + Math.random().toString(36).slice(2,9); });
+      });
+    }
     if (g.goalType === 'multiList') {
       if (!Array.isArray(g.lists)) g.lists = [];
       g.lists.forEach(l => {
@@ -2991,6 +3056,7 @@ function renderProjects() {
       else if (g.goalType === 'workouts') { const d = g.weeksComplete||0, t = g.weeksTotal||18; pct = t > 0 ? Math.round((d/t)*100) : 0; }
       else if (g.goalType === 'months') { const data = g.monthsData||{}, nm = new Date().getMonth(); let el=0,dn=0; for (let i=0;i<=nm;i++){ const k = new Date().getFullYear()+'-'+String(i+1).padStart(2,'0'); el++; if (data[k]==='done') dn++; } pct = el>0 ? Math.round((dn/el)*100) : 0; }
       else if (g.goalType === 'multiList') { const ls = g.lists||[]; let t=0,c=0; ls.forEach(l => { t += l.target||0; c += (l.items||[]).length; }); pct = t>0 ? Math.round((Math.min(c,t)/t)*100) : 0; }
+      else if (g.goalType === 'rooms') { const rs = g.rooms||[]; let t=0,d=0; rs.forEach(r => { const ts = r.tasks||[]; t += ts.length; d += ts.filter(x=>x.done).length; }); pct = t > 0 ? Math.round((d/t)*100) : 0; }
 
       goalsContent += '<div class="ag-goal-row" onclick="openGoalDetail(' + g.id + ')">' +
         '<div class="ag-goal-header">' +
@@ -3466,6 +3532,12 @@ function renderGoals() {
           totalItems += tg;
           completedItems += Math.min(tg, (l.items||[]).length);
         });
+      } else if (gType === 'rooms') {
+        (g.rooms||[]).forEach(r => {
+          const ts = r.tasks||[];
+          totalItems += ts.length;
+          completedItems += ts.filter(t => t.done).length;
+        });
       }
     });
     const overallPct = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
@@ -3475,6 +3547,7 @@ function renderGoals() {
     state.goals.forEach(g => {
       if (g.goalType === 'checklist') recentWins += (g.checklistItems||[]).filter(ci => ci.done).length;
       else if (g.goalType === 'multiList') (g.lists||[]).forEach(l => recentWins += (l.items||[]).length);
+      else if (g.goalType === 'rooms') (g.rooms||[]).forEach(r => recentWins += (r.tasks||[]).filter(t => t.done).length);
       else if (g.goalType === 'months') Object.values(g.monthsData||{}).forEach(v => { if (v === 'done') recentWins++; });
     });
 
@@ -3489,6 +3562,7 @@ function renderGoals() {
       else if (gType === 'workouts' && (g.weeksComplete||0) > 0) goalsOnTrack++;
       else if (gType === 'months' && Object.values(g.monthsData||{}).some(v => v === 'done')) goalsOnTrack++;
       else if (gType === 'multiList' && (g.lists||[]).some(l => (l.items||[]).length > 0)) goalsOnTrack++;
+      else if (gType === 'rooms' && (g.rooms||[]).some(r => (r.tasks||[]).some(t => t.done))) goalsOnTrack++;
       else if (gType === 'habit') goalsOnTrack++;
     });
 
@@ -3599,6 +3673,15 @@ function renderGoals() {
         ct += (l.items||[]).length;
       });
       pct = total > 0 ? Math.round((Math.min(ct, total) / total) * 100) : 0;
+    } else if (gType === 'rooms') {
+      const rooms = g.rooms || [];
+      let total = 0, done = 0;
+      rooms.forEach(r => {
+        const tasks = r.tasks || [];
+        total += tasks.length;
+        done += tasks.filter(t => t.done).length;
+      });
+      pct = total > 0 ? Math.round((done / total) * 100) : 0;
     } else if (gType === 'habit') {
       if (linkedHabits.length > 0) {
         const now = new Date();
@@ -3774,6 +3857,47 @@ function renderGoals() {
             '</div>';
         }).join('') +
         '</div></div>';
+    } else if (gType === 'rooms') {
+      const rooms = g.rooms || [];
+      let totalTasks = 0, doneTasks = 0;
+      rooms.forEach(r => {
+        const ts = r.tasks || [];
+        totalTasks += ts.length;
+        doneTasks += ts.filter(t => t.done).length;
+      });
+      bodyHtml = '<div class="rooms-tracker">' +
+        '<div class="rooms-summary"><strong>' + doneTasks + '</strong> / ' + totalTasks + ' tasks done · ' + rooms.length + ' rooms</div>';
+      if (rooms.length === 0) {
+        bodyHtml += '<div class="rooms-empty">No rooms yet — add your first room below.</div>';
+      } else {
+        rooms.forEach((r, ri) => {
+          const tasks = r.tasks || [];
+          const rDone = tasks.filter(t => t.done).length;
+          const rPct = tasks.length > 0 ? Math.round((rDone / tasks.length) * 100) : 0;
+          bodyHtml += '<div class="room-block ' + (rPct === 100 && tasks.length > 0 ? 'complete' : '') + '">' +
+            '<div class="room-head">' +
+              '<input type="text" class="room-name" value="' + esc(r.name||'') + '" placeholder="Room name" onblur="renameRoomSilent(' + g.id + ',\'' + esc(r.id) + '\',this.value)">' +
+              '<span class="room-count">' + rDone + ' / ' + tasks.length + '</span>' +
+              '<button class="chip-x" onclick="deleteRoom(' + g.id + ',\'' + esc(r.id) + '\')" title="Delete room">&times;</button>' +
+            '</div>' +
+            '<div class="room-tasks">' +
+            tasks.map(t =>
+              '<div class="room-task ' + (t.done?'checked':'') + '">' +
+                '<input type="checkbox" ' + (t.done?'checked':'') + ' onchange="toggleRoomTask(' + g.id + ',\'' + esc(r.id) + '\',\'' + esc(t.id) + '\')">' +
+                '<input type="text" class="rt-name" value="' + esc(t.name||'') + '" placeholder="Task..." onblur="renameRoomTaskSilent(' + g.id + ',\'' + esc(r.id) + '\',\'' + esc(t.id) + '\',this.value)">' +
+                '<button class="chip-x" onclick="deleteRoomTask(' + g.id + ',\'' + esc(r.id) + '\',\'' + esc(t.id) + '\')">&times;</button>' +
+              '</div>'
+            ).join('') +
+            '</div>' +
+            '<div class="room-add">' +
+              '<input type="text" placeholder="Add task..." onkeydown="if(event.key===\'Enter\')addRoomTask(' + g.id + ',\'' + esc(r.id) + '\',this)">' +
+              '<button class="btn btn-sm btn-outline" onclick="addRoomTask(' + g.id + ',\'' + esc(r.id) + '\',this.previousElementSibling)">+ Task</button>' +
+            '</div>' +
+          '</div>';
+        });
+      }
+      bodyHtml += '<button class="btn btn-sm btn-outline rooms-add-btn" onclick="addRoom(' + g.id + ')">+ Add Room</button>' +
+        '</div>';
     } else if (gType === 'multiList') {
       const lists = g.lists || [];
       // Header summary — counts per bucket (count = items in list)
@@ -3805,14 +3929,12 @@ function renderGoals() {
       } else {
         merged.forEach(({ it, li, list }) => {
           const namePh = list.key === 'events' ? 'Event name' : 'Restaurant name';
-          const locPh = list.key === 'events' ? 'Spot / venue' : 'Neighborhood';
           feedHtml += '<div class="feed-row" data-bucket="' + esc(list.key||'') + '">' +
             '<div class="feed-row-main">' +
               '<span class="feed-badge feed-badge-' + esc(list.key||'') + '" title="' + esc(list.label||'') + '">' + esc(list.icon||'') + '</span>' +
               '<input type="text" class="feed-name" value="' + esc(it.name||'') + '" placeholder="' + esc(namePh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
               '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')" title="Delete">&times;</button>' +
             '</div>' +
-            '<input type="text" class="feed-loc" value="' + esc(it.location||'') + '" placeholder="' + esc(locPh) + ' (optional)" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'location\',this.value)">' +
           '</div>';
         });
       }
@@ -3993,6 +4115,75 @@ function cycleMonthState(goalId, monthKey) {
   const next = cur === '' ? 'done' : (cur === 'done' ? 'missed' : '');
   if (next === '') delete g.monthsData[monthKey];
   else g.monthsData[monthKey] = next;
+  save(); renderGoals();
+}
+
+// ROOMS goal helpers (Home Renovations)
+function addRoom(goalId) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g) return;
+  if (!Array.isArray(g.rooms)) g.rooms = [];
+  g.rooms.push({ id: 'room-' + Math.random().toString(36).slice(2,9), name: '', tasks: [] });
+  save(); renderGoals();
+}
+function deleteRoom(goalId, roomId) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.rooms)) return;
+  const r = g.rooms.find(x => x.id === roomId);
+  if (!r) return;
+  if ((r.tasks||[]).length > 0) {
+    const ok = confirm('Delete "' + (r.name||'this room') + '" and its ' + r.tasks.length + ' task(s)?');
+    if (!ok) return;
+  }
+  g.rooms = g.rooms.filter(x => x.id !== roomId);
+  save(); renderGoals();
+}
+function renameRoomSilent(goalId, roomId, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.rooms)) return;
+  const r = g.rooms.find(x => x.id === roomId);
+  if (!r) return;
+  r.name = value;
+  save();
+}
+function addRoomTask(goalId, roomId, inputEl) {
+  const name = inputEl.value.trim();
+  if (!name) return;
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.rooms)) return;
+  const r = g.rooms.find(x => x.id === roomId);
+  if (!r) return;
+  if (!Array.isArray(r.tasks)) r.tasks = [];
+  r.tasks.push({ id: 'rt-' + Math.random().toString(36).slice(2,9), name, done: false });
+  inputEl.value = '';
+  save(); renderGoals();
+}
+function toggleRoomTask(goalId, roomId, taskId) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.rooms)) return;
+  const r = g.rooms.find(x => x.id === roomId);
+  if (!r) return;
+  const t = (r.tasks||[]).find(x => x.id === taskId);
+  if (!t) return;
+  t.done = !t.done;
+  save(); renderGoals();
+}
+function renameRoomTaskSilent(goalId, roomId, taskId, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.rooms)) return;
+  const r = g.rooms.find(x => x.id === roomId);
+  if (!r) return;
+  const t = (r.tasks||[]).find(x => x.id === taskId);
+  if (!t) return;
+  t.name = value;
+  save();
+}
+function deleteRoomTask(goalId, roomId, taskId) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.rooms)) return;
+  const r = g.rooms.find(x => x.id === roomId);
+  if (!r) return;
+  r.tasks = (r.tasks||[]).filter(x => x.id !== taskId);
   save(); renderGoals();
 }
 
