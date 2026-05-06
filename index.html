@@ -816,6 +816,27 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .checklist-add input { flex:1; padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:var(--surface); }
 .checklist-add input::placeholder { color:var(--text-faint); }
 .checklist-counter { font-size:12px; color:var(--text-faint); margin-bottom:6px; }
+.checklist-item .checklist-date { font-size:11px; padding:3px 6px; border:1px solid var(--border); border-radius:4px; background:var(--surface); color:var(--text-mid); font-family:'DM Sans',sans-serif; flex-shrink:0; }
+.checklist-item .checklist-date:hover { border-color:var(--terra); }
+.checklist-item.checked .checklist-date { color:var(--terra); border-color:var(--terra-glow); background:var(--terra-glow); }
+
+/* Quarterly goal — 4 quadrant grid */
+.quarterly-section { margin:12px 0; }
+.quarterly-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.quarter-card { background:var(--surface); border:1px solid var(--border-light); border-radius:8px; padding:10px; }
+.quarter-label { font-size:10px; font-weight:700; color:var(--terra); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:8px; }
+.quarter-slot { padding:6px 0; border-top:1px dashed var(--border); }
+.quarter-slot:first-of-type { border-top:none; padding-top:0; }
+.quarter-slot .qs-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+.quarter-slot input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; flex-shrink:0; }
+.quarter-slot .qs-icon { font-size:13px; flex-shrink:0; }
+.quarter-slot .qs-name { flex:1; padding:3px 6px; border:1px solid transparent; border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); min-width:0; }
+.quarter-slot .qs-name:hover, .quarter-slot .qs-name:focus { border-color:var(--border); background:var(--card); outline:none; }
+.quarter-slot .qs-name::placeholder { color:var(--text-faint); font-style:italic; }
+.quarter-slot .qs-date { font-size:10px; padding:2px 4px; border:1px solid var(--border); border-radius:3px; background:var(--card); color:var(--text-faint); font-family:'DM Sans',sans-serif; margin-left:22px; }
+.quarter-slot.checked .qs-name { text-decoration:line-through; color:var(--text-faint); }
+.quarter-slot.checked .qs-date { color:var(--terra); border-color:var(--terra-glow); }
+@media (max-width:600px) { .quarterly-grid { grid-template-columns:1fr; } }
 
 /* Sprint goal checkboxes */
 .goal-checkboxes { display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:250px; overflow-y:auto; }
@@ -1970,13 +1991,18 @@ function defaultState() {
       { id:211, title:'Build Financial Review Habit', category:'money', goalType:'streak', isActive:false, linkedHabits:[111], streakWeeks:{}, streakMonths:{}, streakWeeklyLabel:'Weekly Review', streakMonthlyLabel:'Monthly Deep Dive' },
 
       // CHECKLIST goals — named items to cross off at your own pace
-      { id:204, title:'Visit 4 Out-of-State Friends', category:'social', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[
-        {name:'Visit Rio',done:false},{name:'Visit Anne',done:false},{name:'Visit Lucy',done:false},{name:'Visit Sam',done:false}
+      { id:204, title:'Visit 4 Out-of-State Friends', category:'social', goalType:'checklist', isActive:false, linkedHabits:[], trackDates:true, checklistItems:[
+        {name:'Visit Rio',done:false,date:''},{name:'Visit Anne',done:false,date:''},{name:'Visit Lucy',done:false,date:''},{name:'Visit Sam',done:false,date:''}
       ], checklistTarget:4, checklistUnit:'visits' },
       { id:205, title:'Read 12 Books', category:'growth', goalType:'checklist', isActive:false, linkedHabits:[108], checklistItems:[], checklistTarget:12, checklistUnit:'books' },
       { id:206, title:'Listen to 52 Curated Podcasts', category:'growth', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[], checklistTarget:52, checklistUnit:'podcasts' },
       { id:207, title:'AI Automation of 5 Tasks', category:'growth', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[], checklistTarget:5, checklistUnit:'automations' },
-      { id:208, title:'Denver: 1 Event + 1 New Restaurant / Quarter', category:'fun', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[], checklistTarget:8, checklistUnit:'outings' },
+      { id:208, title:'Denver: 1 Event + 1 New Restaurant / Quarter', category:'fun', goalType:'quarterly', isActive:false, linkedHabits:[], quarters:[
+        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} },
+        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} },
+        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} },
+        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} }
+      ] },
       { id:209, title:'Complete Home Renovations', category:'home', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[
         {name:'Bathrooms',done:false},{name:'Laundry room',done:false},{name:'Doors',done:false},{name:'Final touch-ups',done:false}
       ], checklistTarget:4, checklistUnit:'projects' },
@@ -2095,7 +2121,7 @@ function migrateRoutines(p) {
 function migrateGoals(p) {
   if (!p.goals) p.goals = [];
   // Force reload goals from defaults if version is outdated
-  if ((p._goalVersion || 0) < 6) {
+  if ((p._goalVersion || 0) < 7) {
     const ds = defaultState();
     // Preserve user-entered data where possible
     const oldGoalMap = {};
@@ -2112,14 +2138,35 @@ function migrateGoals(p) {
         ng.momData = old.momData || {};
       }
       if (ng.goalType === 'checklist' && old.checklistItems && old.checklistItems.length > 0) {
-        ng.checklistItems = old.checklistItems;
+        // Merge by index — preserve done/date, keep new shape's name if old name matches
+        ng.checklistItems = ng.checklistItems.map((nci, i) => {
+          const oci = old.checklistItems[i];
+          if (!oci) return nci;
+          return { name: oci.name || nci.name, done: !!oci.done, date: oci.date || nci.date || '' };
+        });
+        // Append any extra old items beyond the default length
+        if (old.checklistItems.length > ng.checklistItems.length) {
+          old.checklistItems.slice(ng.checklistItems.length).forEach(oci => {
+            ng.checklistItems.push({ name: oci.name, done: !!oci.done, date: oci.date || '' });
+          });
+        }
+      }
+      if (ng.goalType === 'quarterly' && old.quarters && Array.isArray(old.quarters)) {
+        ng.quarters = ng.quarters.map((nq, i) => {
+          const oq = old.quarters[i];
+          if (!oq) return nq;
+          return {
+            event: { name: (oq.event&&oq.event.name)||'', done: !!(oq.event&&oq.event.done), date: (oq.event&&oq.event.date)||'' },
+            restaurant: { name: (oq.restaurant&&oq.restaurant.name)||'', done: !!(oq.restaurant&&oq.restaurant.done), date: (oq.restaurant&&oq.restaurant.date)||'' }
+          };
+        });
       }
       if (old.linkedHabits && old.linkedHabits.length > 0) ng.linkedHabits = old.linkedHabits;
       if (old.isActive) ng.isActive = true;
       if (old.why) ng.why = old.why;
       return ng;
     });
-    p._goalVersion = 6;
+    p._goalVersion = 7;
     if (p.nextId < 213) p.nextId = 213;
     // Ensure sprint structure
     if (!p.sprint) p.sprint = ds.sprint;
@@ -2142,8 +2189,17 @@ function migrateGoals(p) {
       if (!g.streakMonths) g.streakMonths = {};
     }
     if (g.goalType === 'mom' && !g.momData) g.momData = {};
+    if (g.goalType === 'quarterly' && (!g.quarters || !Array.isArray(g.quarters) || g.quarters.length !== 4)) {
+      g.quarters = [0,1,2,3].map(() => ({
+        event:{name:'',done:false,date:''},
+        restaurant:{name:'',done:false,date:''}
+      }));
+    }
     if (!g.goalType) g.goalType = 'checklist';
     if (!g.checklistItems) g.checklistItems = [];
+    if (g.goalType === 'checklist' && g.trackDates) {
+      g.checklistItems.forEach(ci => { if (ci.date === undefined) ci.date = ''; });
+    }
   });
   if (!p.sprint) p.sprint = { name: 'Sprint 1', startDate: todayKey(), focusedGoalIds: [], weeks: {} };
   if (!p.sprint.focusedGoalIds) p.sprint.focusedGoalIds = [];
@@ -2785,6 +2841,7 @@ function renderProjects() {
       else if (g.goalType === 'mom') { const vals = Object.values(g.momData||{}); pct = vals.length > 0 ? Math.round((vals.filter(v => v >= (g.momTarget||1)).length / 12) * 100) : 0; }
       else if (g.goalType === 'phased') { const ph = g.phases||[]; const tw = ph.reduce((s,p)=>s+p.weeks,0); const dw = ph.reduce((s,p)=>s+(p.completed||[]).length,0); pct = tw > 0 ? Math.round((dw/tw)*100) : 0; }
       else if (g.goalType === 'streak') { const wd = Object.values(g.streakWeeks||{}).filter(v=>v).length; const md = Object.values(g.streakMonths||{}).filter(v=>v).length; pct = Math.round(((wd+md)/64)*100); }
+      else if (g.goalType === 'quarterly') { let d = 0; (g.quarters||[]).forEach(q => { if (q.event&&q.event.done) d++; if (q.restaurant&&q.restaurant.done) d++; }); pct = Math.round((d/8)*100); }
 
       goalsContent += '<div class="ag-goal-row" onclick="openGoalDetail(' + g.id + ')">' +
         '<div class="ag-goal-header">' +
@@ -3238,6 +3295,13 @@ function renderGoals() {
         const hits = months.filter(v => v >= (g.momTarget||1));
         totalItems += 12;
         completedItems += hits.length;
+      } else if (gType === 'quarterly') {
+        const quarters = g.quarters || [];
+        totalItems += 8;
+        quarters.forEach(q => {
+          if (q.event && q.event.done) completedItems++;
+          if (q.restaurant && q.restaurant.done) completedItems++;
+        });
       }
     });
     const overallPct = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
@@ -3246,6 +3310,12 @@ function renderGoals() {
     let recentWins = 0;
     state.goals.forEach(g => {
       if (g.goalType === 'checklist') recentWins += (g.checklistItems||[]).filter(ci => ci.done).length;
+      else if (g.goalType === 'quarterly') {
+        (g.quarters||[]).forEach(q => {
+          if (q.event && q.event.done) recentWins++;
+          if (q.restaurant && q.restaurant.done) recentWins++;
+        });
+      }
     });
 
     // Goals on track (have any progress)
@@ -3255,6 +3325,7 @@ function renderGoals() {
       if (gType === 'numeric' && (g.numericCurrent||0) > 0) goalsOnTrack++;
       else if (gType === 'checklist' && (g.checklistItems||[]).some(ci => ci.done)) goalsOnTrack++;
       else if (gType === 'mom' && Object.keys(g.momData||{}).length > 0) goalsOnTrack++;
+      else if (gType === 'quarterly' && (g.quarters||[]).some(q => (q.event&&q.event.done) || (q.restaurant&&q.restaurant.done))) goalsOnTrack++;
       else if (gType === 'habit') goalsOnTrack++;
     });
 
@@ -3339,6 +3410,14 @@ function renderGoals() {
       const monthsDone = Object.values(g.streakMonths||{}).filter(v => v).length;
       // 52 weekly reviews + 12 monthly deep dives = 64 total
       pct = Math.round(((weeksDone + monthsDone) / 64) * 100);
+    } else if (gType === 'quarterly') {
+      const quarters = g.quarters || [];
+      let totalDone = 0;
+      quarters.forEach(q => {
+        if (q.event && q.event.done) totalDone++;
+        if (q.restaurant && q.restaurant.done) totalDone++;
+      });
+      pct = Math.round((totalDone / 8) * 100);
     } else if (gType === 'habit') {
       if (linkedHabits.length > 0) {
         const now = new Date();
@@ -3468,15 +3547,51 @@ function renderGoals() {
             '</div>';
         }).join('') +
         '</div></div>';
+    } else if (gType === 'quarterly') {
+      const quarters = g.quarters || [];
+      let totalDone = 0;
+      quarters.forEach(q => {
+        if (q.event && q.event.done) totalDone++;
+        if (q.restaurant && q.restaurant.done) totalDone++;
+      });
+      bodyHtml = '<div class="quarterly-section">' +
+        '<div class="checklist-counter">' + totalDone + ' / 8 outings</div>' +
+        '<div class="quarterly-grid">' +
+        quarters.map((q, qi) => {
+          const ev = q.event || {name:'',done:false,date:''};
+          const rs = q.restaurant || {name:'',done:false,date:''};
+          return '<div class="quarter-card">' +
+            '<div class="quarter-label">Q' + (qi+1) + '</div>' +
+            '<div class="quarter-slot ' + (ev.done?'checked':'') + '">' +
+              '<div class="qs-row">' +
+                '<input type="checkbox" ' + (ev.done?'checked':'') + ' onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'event\',\'done\',this.checked)">' +
+                '<span class="qs-icon">🎟️</span>' +
+                '<input type="text" class="qs-name" value="' + esc(ev.name) + '" placeholder="Event..." onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'event\',\'name\',this.value)">' +
+              '</div>' +
+              '<input type="date" class="qs-date" value="' + esc(ev.date||'') + '" onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'event\',\'date\',this.value)">' +
+            '</div>' +
+            '<div class="quarter-slot ' + (rs.done?'checked':'') + '">' +
+              '<div class="qs-row">' +
+                '<input type="checkbox" ' + (rs.done?'checked':'') + ' onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'restaurant\',\'done\',this.checked)">' +
+                '<span class="qs-icon">🍽️</span>' +
+                '<input type="text" class="qs-name" value="' + esc(rs.name) + '" placeholder="New restaurant..." onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'restaurant\',\'name\',this.value)">' +
+              '</div>' +
+              '<input type="date" class="qs-date" value="' + esc(rs.date||'') + '" onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'restaurant\',\'date\',this.value)">' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+        '</div></div>';
     } else {
       const clItems = g.checklistItems || [];
       const done = clItems.filter(ci => ci.done).length;
+      const trackDates = !!g.trackDates;
       bodyHtml = '<div class="checklist-section">' +
         '<div class="checklist-counter">' + done + ' / ' + (g.checklistTarget||clItems.length) + ' ' + esc(g.checklistUnit||'items') + '</div>' +
         clItems.map((ci, i) =>
-          '<div class="checklist-item ' + (ci.done?'checked':'') + '">' +
+          '<div class="checklist-item ' + (ci.done?'checked':'') + (trackDates?' has-date':'') + '">' +
           '<input type="checkbox" ' + (ci.done?'checked':'') + ' onchange="toggleChecklistItem(' + g.id + ',' + i + ')">' +
           '<span class="checklist-label" onclick="editChecklistItem(' + g.id + ',' + i + ',this)" style="cursor:text">' + esc(ci.name) + '</span>' +
+          (trackDates ? '<input type="date" class="checklist-date" value="' + esc(ci.date||'') + '" onchange="updateChecklistItemDate(' + g.id + ',' + i + ',this.value)" title="Date completed">' : '') +
           '<button class="chip-x" onclick="deleteChecklistItem(' + g.id + ',' + i + ')">&times;</button>' +
           '</div>'
         ).join('') +
@@ -3642,9 +3757,32 @@ function renderSprintGoalCheckboxes() {
 function toggleChecklistItem(goalId, idx) {
   const g = state.goals.find(x => x.id === goalId);
   if (g && g.checklistItems && g.checklistItems[idx]) {
-    g.checklistItems[idx].done = !g.checklistItems[idx].done;
+    const ci = g.checklistItems[idx];
+    ci.done = !ci.done;
+    // Auto-stamp today's date when checking, if trackDates and no date set yet
+    if (g.trackDates && ci.done && !ci.date) ci.date = todayKey();
     save(); renderGoals();
   }
+}
+function updateChecklistItemDate(goalId, idx, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (g && g.checklistItems && g.checklistItems[idx]) {
+    g.checklistItems[idx].date = value || '';
+    save(); renderGoals();
+  }
+}
+function toggleQuarterField(goalId, qIdx, slot, field, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !g.quarters || !g.quarters[qIdx]) return;
+  if (!g.quarters[qIdx][slot]) g.quarters[qIdx][slot] = {name:'',done:false,date:''};
+  const s = g.quarters[qIdx][slot];
+  if (field === 'done') {
+    s.done = !!value;
+    if (s.done && !s.date) s.date = todayKey();
+  } else {
+    s[field] = value;
+  }
+  save(); renderGoals();
 }
 function addChecklistItem(goalId, inputEl) {
   const name = inputEl.value.trim();
