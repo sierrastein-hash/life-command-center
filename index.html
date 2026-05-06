@@ -820,23 +820,94 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .checklist-item .checklist-date:hover { border-color:var(--terra); }
 .checklist-item.checked .checklist-date { color:var(--terra); border-color:var(--terra-glow); background:var(--terra-glow); }
 
-/* Quarterly goal — 4 quadrant grid */
-.quarterly-section { margin:12px 0; }
-.quarterly-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.quarter-card { background:var(--surface); border:1px solid var(--border-light); border-radius:8px; padding:10px; }
-.quarter-label { font-size:10px; font-weight:700; color:var(--terra); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:8px; }
-.quarter-slot { padding:6px 0; border-top:1px dashed var(--border); }
-.quarter-slot:first-of-type { border-top:none; padding-top:0; }
-.quarter-slot .qs-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
-.quarter-slot input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; flex-shrink:0; }
-.quarter-slot .qs-icon { font-size:13px; flex-shrink:0; }
-.quarter-slot .qs-name { flex:1; padding:3px 6px; border:1px solid transparent; border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); min-width:0; }
-.quarter-slot .qs-name:hover, .quarter-slot .qs-name:focus { border-color:var(--border); background:var(--card); outline:none; }
-.quarter-slot .qs-name::placeholder { color:var(--text-faint); font-style:italic; }
-.quarter-slot .qs-date { font-size:10px; padding:2px 4px; border:1px solid var(--border); border-radius:3px; background:var(--card); color:var(--text-faint); font-family:'DM Sans',sans-serif; margin-left:22px; }
-.quarter-slot.checked .qs-name { text-decoration:line-through; color:var(--text-faint); }
-.quarter-slot.checked .qs-date { color:var(--terra); border-color:var(--terra-glow); }
-@media (max-width:600px) { .quarterly-grid { grid-template-columns:1fr; } }
+/* LOG goal — dated check-in entries */
+.log-tracker { margin:12px 0; }
+.log-summary { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; padding:12px; background:var(--surface); border-radius:8px; margin-bottom:10px; }
+.log-stat label { font-size:10px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px; }
+.log-stat input { width:100%; padding:4px 6px; border:1px solid var(--border); border-radius:4px; font-size:14px; font-family:'DM Sans',sans-serif; background:var(--card); color:var(--text); }
+.log-stat-val { font-size:16px; font-weight:600; color:var(--terra); font-family:'Playfair Display',serif; }
+.log-rows { display:flex; flex-direction:column; gap:4px; margin-bottom:8px; }
+.log-row { display:grid; grid-template-columns:auto 90px 1fr auto; gap:6px; align-items:center; padding:4px; border-radius:4px; }
+.log-row:hover { background:var(--surface); }
+.log-row input { padding:4px 6px; border:1px solid var(--border); border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:var(--card); }
+.log-row input[type="date"] { width:auto; }
+.log-row .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:14px; }
+.log-row .chip-x:hover { color:var(--plum); }
+.log-add-btn { font-size:11px; }
+
+/* WORKOUTS goal — flat N-week grid */
+.workouts-tracker { margin:12px 0; }
+.workouts-summary { display:flex; justify-content:space-between; font-size:12px; color:var(--text-mid); margin-bottom:8px; }
+.workouts-summary strong { color:var(--terra); font-size:14px; }
+.workouts-total { color:var(--text-faint); }
+.workouts-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; }
+.workout-week { background:var(--surface); border:1px solid var(--border-light); border-radius:6px; padding:6px 4px; text-align:center; }
+.workout-week.hit { background:var(--terra-glow); border-color:var(--terra); }
+.workout-week.over { background:linear-gradient(135deg, var(--terra-glow), rgba(122,150,104,0.18)); border-color:var(--sage); }
+.workout-week .ww-num { font-size:9px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
+.workout-week.hit .ww-num { color:var(--terra); }
+.workout-week .ww-controls { display:flex; align-items:center; justify-content:center; gap:3px; }
+.workout-week .ww-btn { width:18px; height:18px; border:1px solid var(--border); background:var(--card); border-radius:4px; cursor:pointer; font-size:11px; font-weight:600; color:var(--text-mid); padding:0; line-height:1; }
+.workout-week .ww-btn:hover { border-color:var(--terra); color:var(--terra); }
+.workout-week .ww-count { font-size:14px; font-weight:700; color:var(--text); min-width:14px; }
+.workout-week.hit .ww-count { color:var(--terra); }
+@media (max-width:600px) { .workouts-grid { grid-template-columns:repeat(3, 1fr); } }
+
+/* MONTHS goal — tri-state cells */
+.months-tracker { margin:12px 0; }
+.months-summary { font-size:12px; color:var(--text-mid); margin-bottom:8px; }
+.months-summary strong { color:var(--terra); }
+.months-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; }
+.month-cell { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 4px; background:var(--surface); border:1px solid var(--border-light); border-radius:6px; cursor:pointer; transition:all 0.15s; user-select:none; }
+.month-cell:hover { border-color:var(--terra); }
+.month-cell .mc-label { font-size:11px; font-weight:600; color:var(--text-mid); }
+.month-cell .mc-mark { font-size:16px; font-weight:700; line-height:1.1; min-height:18px; }
+.month-cell.month-done { background:var(--terra-glow); border-color:var(--terra); }
+.month-cell.month-done .mc-mark { color:var(--terra); }
+.month-cell.month-done .mc-label { color:var(--terra); }
+.month-cell.month-missed { background:rgba(184,116,112,0.12); border-color:var(--rose); }
+.month-cell.month-missed .mc-mark { color:var(--rose); }
+.month-cell.month-missed .mc-label { color:var(--rose); }
+.month-cell.future { opacity:0.5; }
+@media (max-width:600px) { .months-grid { grid-template-columns:repeat(4, 1fr); } }
+
+/* MULTILIST goal — two-column lists */
+.multilist-tracker { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:12px 0; }
+.ml-column { background:var(--surface); border:1px solid var(--border-light); border-radius:8px; padding:10px; }
+.ml-header { display:flex; align-items:center; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.ml-icon { font-size:14px; }
+.ml-label { font-size:12px; font-weight:700; color:var(--text); flex:1; }
+.ml-count { font-size:11px; font-weight:600; color:var(--terra); }
+.ml-items { display:flex; flex-direction:column; gap:4px; margin-bottom:8px; }
+.ml-item { display:grid; grid-template-columns:auto 1fr auto auto; gap:6px; align-items:center; padding:4px; border-radius:4px; }
+.ml-item:hover { background:var(--card); }
+.ml-item input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; }
+.ml-name { padding:3px 6px; border:1px solid transparent; border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); min-width:0; }
+.ml-name:focus, .ml-name:hover { border-color:var(--border); background:var(--card); outline:none; }
+.ml-name::placeholder { color:var(--text-faint); font-style:italic; }
+.ml-date { font-size:10px; padding:2px 4px; border:1px solid var(--border); border-radius:3px; background:var(--card); color:var(--text-faint); font-family:'DM Sans',sans-serif; }
+.ml-item.checked .ml-name { text-decoration:line-through; color:var(--text-faint); }
+.ml-item.checked .ml-date { color:var(--terra); border-color:var(--terra-glow); }
+.ml-item .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:14px; }
+.ml-item .chip-x:hover { color:var(--plum); }
+.ml-add { font-size:11px; width:100%; }
+@media (max-width:600px) { .multilist-tracker { grid-template-columns:1fr; } }
+
+/* Supporting habits — monthly performance rows */
+.habit-monthly-list { display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+.habit-monthly-row { background:var(--surface); border:1px solid var(--border-light); border-radius:6px; padding:8px 10px; }
+.habit-monthly-row .hm-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.habit-monthly-row .hm-name { flex:1; font-size:12px; font-weight:600; color:var(--text); }
+.habit-monthly-row .hm-stat { font-size:11px; color:var(--terra); font-weight:600; }
+.habit-monthly-row .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:13px; }
+.habit-monthly-row .chip-x:hover { color:var(--plum); }
+.habit-monthly-row .hm-dots { display:flex; flex-wrap:wrap; gap:2px; }
+.habit-monthly-row .hd-dot { width:9px; height:9px; border-radius:50%; background:var(--border); }
+.habit-monthly-row .hd-dot.done { background:var(--terra); }
+.habit-monthly-row .hd-dot.missed { background:rgba(184,116,112,0.4); }
+.habit-monthly-row .hd-dot.skip { background:transparent; border:1px dashed var(--border); }
+.habit-monthly-row .hd-dot.future { background:var(--card); border:1px solid var(--border); }
+.habit-empty { font-size:12px; color:var(--text-faint); font-style:italic; padding:4px 0; }
 
 /* Sprint goal checkboxes */
 .goal-checkboxes { display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:250px; overflow-y:auto; }
@@ -1972,23 +2043,19 @@ function defaultState() {
       { id:24, name:'Ann Marie', group:'t4', contactType:'in-person', frequency:'biannual', lastSeen:'', birthday:'', notes:'' }
     ],
     goals: [
-      // NUMERIC goals — single current/target number
-      { id:200, title:'Lose 40 Pounds', category:'health', goalType:'numeric', isActive:false, linkedHabits:[102,103,104], numericCurrent:0, numericTarget:40, numericUnit:'lbs lost', numericStart:0, numericStartLabel:'Starting weight', numericCurrentLabel:'Current weight' },
-      { id:203, title:'Make $10k Outside My Job', category:'money', goalType:'numeric', isActive:false, linkedHabits:[], numericCurrent:0, numericTarget:10000, numericUnit:'$ earned' },
+      // LOG goals — dated check-in entries
+      { id:200, title:'Lose 40 Pounds', category:'health', goalType:'log', logMode:'descending', isActive:false, linkedHabits:[102,103,104], logTarget:40, logUnit:'lbs', logStart:0, logStartLabel:'Starting weight', logEntryLabel:'Weigh-in', logEntries:[] },
+      { id:203, title:'Make $10k Outside My Job', category:'money', goalType:'log', logMode:'cumulative', isActive:false, linkedHabits:[], logTarget:10000, logUnit:'$', logEntryLabel:'Income', logEntries:[] },
 
       // MOM goals — month-over-month tracking
       { id:201, title:'Average 8 Hours of Sleep', category:'health', goalType:'mom', isActive:false, linkedHabits:[109], momData:{}, momUnit:'hrs avg', momTarget:8 },
       { id:202, title:'10k Steps Monthly Average', category:'health', goalType:'mom', isActive:false, linkedHabits:[], momData:{}, momUnit:'steps', momTarget:10000 },
 
-      // PHASED goal — multi-phase weekly tracker
-      { id:210, title:'Finish Sad to Savage Course', category:'growth', goalType:'phased', isActive:false, linkedHabits:[], phases:[
-        { name:'Class 1', weeks:6, completed:[] },
-        { name:'Class 2', weeks:6, completed:[] },
-        { name:'Class 3', weeks:6, completed:[] }
-      ] },
+      // WORKOUTS goal — flat N-week tracker w/ workouts-per-week count
+      { id:210, title:'Finish Sad to Savage Course', category:'growth', goalType:'workouts', isActive:false, linkedHabits:[], workoutWeeks:18, workoutMin:3, workoutMax:5, workoutData:{} },
 
-      // STREAK goal — recurring habit check-ins (weekly + monthly)
-      { id:211, title:'Build Financial Review Habit', category:'money', goalType:'streak', isActive:false, linkedHabits:[111], streakWeeks:{}, streakMonths:{}, streakWeeklyLabel:'Weekly Review', streakMonthlyLabel:'Monthly Deep Dive' },
+      // MONTHS goal — 12-month tri-state tracker (done/missed/blank)
+      { id:211, title:'Build Financial Review Habit', category:'money', goalType:'months', isActive:false, linkedHabits:[111], monthsData:{} },
 
       // CHECKLIST goals — named items to cross off at your own pace
       { id:204, title:'Visit 4 Out-of-State Friends', category:'social', goalType:'checklist', isActive:false, linkedHabits:[], trackDates:true, checklistItems:[
@@ -1997,11 +2064,9 @@ function defaultState() {
       { id:205, title:'Read 12 Books', category:'growth', goalType:'checklist', isActive:false, linkedHabits:[108], checklistItems:[], checklistTarget:12, checklistUnit:'books' },
       { id:206, title:'Listen to 52 Curated Podcasts', category:'growth', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[], checklistTarget:52, checklistUnit:'podcasts' },
       { id:207, title:'AI Automation of 5 Tasks', category:'growth', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[], checklistTarget:5, checklistUnit:'automations' },
-      { id:208, title:'Denver: 1 Event + 1 New Restaurant / Quarter', category:'fun', goalType:'quarterly', isActive:false, linkedHabits:[], quarters:[
-        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} },
-        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} },
-        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} },
-        { event:{name:'',done:false,date:''}, restaurant:{name:'',done:false,date:''} }
+      { id:208, title:'Denver: 4 Events + 4 New Restaurants', category:'fun', goalType:'multiList', isActive:false, linkedHabits:[], lists:[
+        { key:'events', label:'Events', icon:'🎟️', target:4, items:[] },
+        { key:'restaurants', label:'Restaurants', icon:'🍽️', target:4, items:[] }
       ] },
       { id:209, title:'Complete Home Renovations', category:'home', goalType:'checklist', isActive:false, linkedHabits:[], checklistItems:[
         {name:'Bathrooms',done:false},{name:'Laundry room',done:false},{name:'Doors',done:false},{name:'Final touch-ups',done:false}
@@ -2121,7 +2186,7 @@ function migrateRoutines(p) {
 function migrateGoals(p) {
   if (!p.goals) p.goals = [];
   // Force reload goals from defaults if version is outdated
-  if ((p._goalVersion || 0) < 7) {
+  if ((p._goalVersion || 0) < 8) {
     const ds = defaultState();
     // Preserve user-entered data where possible
     const oldGoalMap = {};
@@ -2130,43 +2195,84 @@ function migrateGoals(p) {
       const old = oldGoalMap[ng.id];
       if (!old) return ng;
       // Carry forward user data
-      if (ng.goalType === 'numeric') {
-        ng.numericCurrent = old.numericCurrent || 0;
-        if (old.numericStart) ng.numericStart = old.numericStart;
+      if (ng.goalType === 'log') {
+        ng.logEntries = Array.isArray(old.logEntries) ? old.logEntries : [];
+        if (typeof old.logStart === 'number') ng.logStart = old.logStart;
+        // Backfill from old numeric type
+        if (old.goalType === 'numeric') {
+          if (typeof old.numericStart === 'number' && old.numericStart > 0) ng.logStart = old.numericStart;
+          if (typeof old.numericCurrent === 'number' && old.numericCurrent > 0) {
+            ng.logEntries = ng.logEntries.length > 0 ? ng.logEntries : [{ id: 'mig-' + ng.id, date: todayKey(), value: old.numericCurrent, note: 'Migrated from previous tracker' }];
+          }
+        }
+      }
+      if (ng.goalType === 'workouts') {
+        ng.workoutData = (old.workoutData && typeof old.workoutData === 'object') ? old.workoutData : {};
+        // Backfill from phased: each phase had completed week numbers (1..6); we'll mark those weeks as workoutMin (3)
+        if (old.goalType === 'phased' && Array.isArray(old.phases)) {
+          let weekCounter = 0;
+          old.phases.forEach(ph => {
+            for (let w = 1; w <= (ph.weeks||0); w++) {
+              weekCounter++;
+              if ((ph.completed||[]).includes(w) && !ng.workoutData[weekCounter]) {
+                ng.workoutData[weekCounter] = ng.workoutMin || 3;
+              }
+            }
+          });
+        }
+      }
+      if (ng.goalType === 'months') {
+        ng.monthsData = (old.monthsData && typeof old.monthsData === 'object') ? old.monthsData : {};
+        // Backfill from streak: streakMonths entries become 'done'
+        if (old.goalType === 'streak' && old.streakMonths) {
+          Object.entries(old.streakMonths).forEach(([k,v]) => {
+            if (v && !ng.monthsData[k]) ng.monthsData[k] = 'done';
+          });
+        }
+      }
+      if (ng.goalType === 'multiList') {
+        // Backfill from quarterly Denver: flatten event/restaurant entries into the two lists
+        if (old.goalType === 'quarterly' && Array.isArray(old.quarters)) {
+          let evIdx = 0, rsIdx = 0;
+          old.quarters.forEach((q, qi) => {
+            if (q.event && (q.event.name || q.event.done)) {
+              ng.lists[0].items.push({ id: 'mig-e-' + qi, name: q.event.name||'', done: !!q.event.done, date: q.event.date||'' });
+              evIdx++;
+            }
+            if (q.restaurant && (q.restaurant.name || q.restaurant.done)) {
+              ng.lists[1].items.push({ id: 'mig-r-' + qi, name: q.restaurant.name||'', done: !!q.restaurant.done, date: q.restaurant.date||'' });
+              rsIdx++;
+            }
+          });
+        } else if (Array.isArray(old.lists)) {
+          ng.lists = old.lists.map((ol, li) => ({
+            ...ng.lists[li],
+            ...ol,
+            items: Array.isArray(ol.items) ? ol.items : []
+          }));
+        }
       }
       if (ng.goalType === 'mom') {
         ng.momData = old.momData || {};
       }
       if (ng.goalType === 'checklist' && old.checklistItems && old.checklistItems.length > 0) {
-        // Merge by index — preserve done/date, keep new shape's name if old name matches
         ng.checklistItems = ng.checklistItems.map((nci, i) => {
           const oci = old.checklistItems[i];
           if (!oci) return nci;
           return { name: oci.name || nci.name, done: !!oci.done, date: oci.date || nci.date || '' };
         });
-        // Append any extra old items beyond the default length
         if (old.checklistItems.length > ng.checklistItems.length) {
           old.checklistItems.slice(ng.checklistItems.length).forEach(oci => {
             ng.checklistItems.push({ name: oci.name, done: !!oci.done, date: oci.date || '' });
           });
         }
       }
-      if (ng.goalType === 'quarterly' && old.quarters && Array.isArray(old.quarters)) {
-        ng.quarters = ng.quarters.map((nq, i) => {
-          const oq = old.quarters[i];
-          if (!oq) return nq;
-          return {
-            event: { name: (oq.event&&oq.event.name)||'', done: !!(oq.event&&oq.event.done), date: (oq.event&&oq.event.date)||'' },
-            restaurant: { name: (oq.restaurant&&oq.restaurant.name)||'', done: !!(oq.restaurant&&oq.restaurant.done), date: (oq.restaurant&&oq.restaurant.date)||'' }
-          };
-        });
-      }
       if (old.linkedHabits && old.linkedHabits.length > 0) ng.linkedHabits = old.linkedHabits;
       if (old.isActive) ng.isActive = true;
       if (old.why) ng.why = old.why;
       return ng;
     });
-    p._goalVersion = 7;
+    p._goalVersion = 8;
     if (p.nextId < 213) p.nextId = 213;
     // Ensure sprint structure
     if (!p.sprint) p.sprint = ds.sprint;
@@ -2183,17 +2289,24 @@ function migrateGoals(p) {
     if (!g.linkedHabits) g.linkedHabits = [];
     if (g.isActive === undefined) g.isActive = false;
     if (g.category === 'finance') g.category = 'money';
-    if (g.goalType === 'phased' && !g.phases) g.phases = [];
-    if (g.goalType === 'streak') {
-      if (!g.streakWeeks) g.streakWeeks = {};
-      if (!g.streakMonths) g.streakMonths = {};
-    }
     if (g.goalType === 'mom' && !g.momData) g.momData = {};
-    if (g.goalType === 'quarterly' && (!g.quarters || !Array.isArray(g.quarters) || g.quarters.length !== 4)) {
-      g.quarters = [0,1,2,3].map(() => ({
-        event:{name:'',done:false,date:''},
-        restaurant:{name:'',done:false,date:''}
-      }));
+    if (g.goalType === 'log') {
+      if (!Array.isArray(g.logEntries)) g.logEntries = [];
+      g.logEntries.forEach(e => { if (!e.id) e.id = 'le-' + Math.random().toString(36).slice(2,9); });
+    }
+    if (g.goalType === 'workouts') {
+      if (!g.workoutData || typeof g.workoutData !== 'object') g.workoutData = {};
+      if (!g.workoutWeeks) g.workoutWeeks = 18;
+      if (!g.workoutMin) g.workoutMin = 3;
+      if (!g.workoutMax) g.workoutMax = 5;
+    }
+    if (g.goalType === 'months' && (!g.monthsData || typeof g.monthsData !== 'object')) g.monthsData = {};
+    if (g.goalType === 'multiList') {
+      if (!Array.isArray(g.lists)) g.lists = [];
+      g.lists.forEach(l => {
+        if (!Array.isArray(l.items)) l.items = [];
+        l.items.forEach(it => { if (!it.id) it.id = 'mi-' + Math.random().toString(36).slice(2,9); });
+      });
     }
     if (!g.goalType) g.goalType = 'checklist';
     if (!g.checklistItems) g.checklistItems = [];
@@ -2839,9 +2952,21 @@ function renderProjects() {
       }
       else if (g.goalType === 'checklist') { const cl = g.checklistItems||[]; pct = cl.length > 0 ? Math.round((cl.filter(ci=>ci.done).length / cl.length) * 100) : 0; }
       else if (g.goalType === 'mom') { const vals = Object.values(g.momData||{}); pct = vals.length > 0 ? Math.round((vals.filter(v => v >= (g.momTarget||1)).length / 12) * 100) : 0; }
-      else if (g.goalType === 'phased') { const ph = g.phases||[]; const tw = ph.reduce((s,p)=>s+p.weeks,0); const dw = ph.reduce((s,p)=>s+(p.completed||[]).length,0); pct = tw > 0 ? Math.round((dw/tw)*100) : 0; }
-      else if (g.goalType === 'streak') { const wd = Object.values(g.streakWeeks||{}).filter(v=>v).length; const md = Object.values(g.streakMonths||{}).filter(v=>v).length; pct = Math.round(((wd+md)/64)*100); }
-      else if (g.goalType === 'quarterly') { let d = 0; (g.quarters||[]).forEach(q => { if (q.event&&q.event.done) d++; if (q.restaurant&&q.restaurant.done) d++; }); pct = Math.round((d/8)*100); }
+      else if (g.goalType === 'log') {
+        const entries = g.logEntries||[];
+        if (g.logMode === 'descending') {
+          const start = g.logStart||0;
+          const latest = entries.length > 0 ? entries[entries.length-1].value : start;
+          const lost = Math.max(0, start - latest);
+          pct = g.logTarget > 0 ? Math.round((lost/g.logTarget)*100) : 0;
+        } else {
+          const sum = entries.reduce((s,e) => s + (parseFloat(e.value)||0), 0);
+          pct = g.logTarget > 0 ? Math.round((sum/g.logTarget)*100) : 0;
+        }
+      }
+      else if (g.goalType === 'workouts') { const w = g.workoutWeeks||18, mn = g.workoutMin||3, d = g.workoutData||{}; let h = 0; for (let i=1;i<=w;i++) if ((d[i]||0)>=mn) h++; pct = Math.round((h/w)*100); }
+      else if (g.goalType === 'months') { const data = g.monthsData||{}, nm = new Date().getMonth(); let el=0,dn=0; for (let i=0;i<=nm;i++){ const k = new Date().getFullYear()+'-'+String(i+1).padStart(2,'0'); el++; if (data[k]==='done') dn++; } pct = el>0 ? Math.round((dn/el)*100) : 0; }
+      else if (g.goalType === 'multiList') { const ls = g.lists||[]; let t=0,dn=0; ls.forEach(l => { t += l.target||0; dn += (l.items||[]).filter(i=>i.done).length; }); pct = t>0 ? Math.round((dn/t)*100) : 0; }
 
       goalsContent += '<div class="ag-goal-row" onclick="openGoalDetail(' + g.id + ')">' +
         '<div class="ag-goal-header">' +
@@ -3295,12 +3420,27 @@ function renderGoals() {
         const hits = months.filter(v => v >= (g.momTarget||1));
         totalItems += 12;
         completedItems += hits.length;
-      } else if (gType === 'quarterly') {
-        const quarters = g.quarters || [];
-        totalItems += 8;
-        quarters.forEach(q => {
-          if (q.event && q.event.done) completedItems++;
-          if (q.restaurant && q.restaurant.done) completedItems++;
+      } else if (gType === 'log') {
+        const entries = g.logEntries || [];
+        totalItems += g.logTarget || 1;
+        if (g.logMode === 'descending') {
+          const start = g.logStart||0;
+          const latest = entries.length > 0 ? entries[entries.length-1].value : start;
+          completedItems += Math.max(0, start - latest);
+        } else {
+          completedItems += entries.reduce((s,e) => s + (parseFloat(e.value)||0), 0);
+        }
+      } else if (gType === 'workouts') {
+        totalItems += g.workoutWeeks || 18;
+        const data = g.workoutData||{}, mn = g.workoutMin||3;
+        for (let i = 1; i <= (g.workoutWeeks||18); i++) if ((data[i]||0) >= mn) completedItems++;
+      } else if (gType === 'months') {
+        totalItems += 12;
+        Object.values(g.monthsData||{}).forEach(v => { if (v === 'done') completedItems++; });
+      } else if (gType === 'multiList') {
+        (g.lists||[]).forEach(l => {
+          totalItems += l.target || 0;
+          completedItems += (l.items||[]).filter(it => it.done).length;
         });
       }
     });
@@ -3310,12 +3450,8 @@ function renderGoals() {
     let recentWins = 0;
     state.goals.forEach(g => {
       if (g.goalType === 'checklist') recentWins += (g.checklistItems||[]).filter(ci => ci.done).length;
-      else if (g.goalType === 'quarterly') {
-        (g.quarters||[]).forEach(q => {
-          if (q.event && q.event.done) recentWins++;
-          if (q.restaurant && q.restaurant.done) recentWins++;
-        });
-      }
+      else if (g.goalType === 'multiList') (g.lists||[]).forEach(l => recentWins += (l.items||[]).filter(it => it.done).length);
+      else if (g.goalType === 'months') Object.values(g.monthsData||{}).forEach(v => { if (v === 'done') recentWins++; });
     });
 
     // Goals on track (have any progress)
@@ -3325,7 +3461,10 @@ function renderGoals() {
       if (gType === 'numeric' && (g.numericCurrent||0) > 0) goalsOnTrack++;
       else if (gType === 'checklist' && (g.checklistItems||[]).some(ci => ci.done)) goalsOnTrack++;
       else if (gType === 'mom' && Object.keys(g.momData||{}).length > 0) goalsOnTrack++;
-      else if (gType === 'quarterly' && (g.quarters||[]).some(q => (q.event&&q.event.done) || (q.restaurant&&q.restaurant.done))) goalsOnTrack++;
+      else if (gType === 'log' && (g.logEntries||[]).length > 0) goalsOnTrack++;
+      else if (gType === 'workouts' && Object.keys(g.workoutData||{}).length > 0) goalsOnTrack++;
+      else if (gType === 'months' && Object.values(g.monthsData||{}).some(v => v === 'done')) goalsOnTrack++;
+      else if (gType === 'multiList' && (g.lists||[]).some(l => (l.items||[]).some(it => it.done))) goalsOnTrack++;
       else if (gType === 'habit') goalsOnTrack++;
     });
 
@@ -3400,24 +3539,45 @@ function renderGoals() {
       const monthsWithData = Object.values(momData).filter(v => v > 0);
       const monthsHit = monthsWithData.filter(v => v >= (g.momTarget||1));
       pct = monthsWithData.length > 0 ? Math.round((monthsHit.length / 12) * 100) : 0;
-    } else if (gType === 'phased') {
-      const phases = g.phases || [];
-      const totalWeeks = phases.reduce((s,p) => s + p.weeks, 0);
-      const doneWeeks = phases.reduce((s,p) => s + (p.completed||[]).length, 0);
-      pct = totalWeeks > 0 ? Math.round((doneWeeks / totalWeeks) * 100) : 0;
-    } else if (gType === 'streak') {
-      const weeksDone = Object.values(g.streakWeeks||{}).filter(v => v).length;
-      const monthsDone = Object.values(g.streakMonths||{}).filter(v => v).length;
-      // 52 weekly reviews + 12 monthly deep dives = 64 total
-      pct = Math.round(((weeksDone + monthsDone) / 64) * 100);
-    } else if (gType === 'quarterly') {
-      const quarters = g.quarters || [];
-      let totalDone = 0;
-      quarters.forEach(q => {
-        if (q.event && q.event.done) totalDone++;
-        if (q.restaurant && q.restaurant.done) totalDone++;
+    } else if (gType === 'log') {
+      const entries = g.logEntries || [];
+      if (g.logMode === 'descending') {
+        // weight-style: progress = (start - latest) / target
+        const start = g.logStart || 0;
+        const latest = entries.length > 0 ? entries[entries.length-1].value : start;
+        const lost = Math.max(0, start - latest);
+        pct = g.logTarget > 0 ? Math.round((lost / g.logTarget) * 100) : 0;
+      } else {
+        // cumulative: progress = sum / target
+        const sum = entries.reduce((s,e) => s + (parseFloat(e.value)||0), 0);
+        pct = g.logTarget > 0 ? Math.round((sum / g.logTarget) * 100) : 0;
+      }
+    } else if (gType === 'workouts') {
+      const weeks = g.workoutWeeks || 18;
+      const min = g.workoutMin || 3;
+      const data = g.workoutData || {};
+      let weeksHit = 0;
+      for (let w = 1; w <= weeks; w++) if ((data[w]||0) >= min) weeksHit++;
+      pct = Math.round((weeksHit / weeks) * 100);
+    } else if (gType === 'months') {
+      const data = g.monthsData || {};
+      const yr = new Date().getFullYear();
+      const nowMonth = new Date().getMonth(); // 0-indexed
+      let elapsed = 0, done = 0;
+      for (let i = 0; i <= nowMonth; i++) {
+        const key = yr + '-' + String(i+1).padStart(2,'0');
+        elapsed++;
+        if (data[key] === 'done') done++;
+      }
+      pct = elapsed > 0 ? Math.round((done / elapsed) * 100) : 0;
+    } else if (gType === 'multiList') {
+      const lists = g.lists || [];
+      let total = 0, doneCt = 0;
+      lists.forEach(l => {
+        total += l.target || 0;
+        doneCt += (l.items||[]).filter(it => it.done).length;
       });
-      pct = Math.round((totalDone / 8) * 100);
+      pct = total > 0 ? Math.round((doneCt / total) * 100) : 0;
     } else if (gType === 'habit') {
       if (linkedHabits.length > 0) {
         const now = new Date();
@@ -3466,54 +3626,102 @@ function renderGoals() {
           '<div class="nt-label">of <span class="nt-target">' + g.numericTarget + '</span> ' + esc(g.numericUnit||'') + '</div>' +
           '</div>';
       }
-    } else if (gType === 'phased') {
-      const phases = g.phases || [];
-      let weekCounter = 0;
-      bodyHtml = '<div class="phased-tracker">';
-      phases.forEach((phase, pi) => {
-        const completed = phase.completed || [];
-        bodyHtml += '<div class="phase-block">' +
-          '<div class="phase-header">' + esc(phase.name) + ' <span class="phase-count">' + completed.length + '/' + phase.weeks + ' weeks</span></div>' +
-          '<div class="phase-weeks">';
-        for (let w = 1; w <= phase.weeks; w++) {
-          weekCounter++;
-          const isDone = completed.includes(w);
-          bodyHtml += '<div class="phase-week ' + (isDone ? 'done' : '') + '" onclick="togglePhaseWeek(' + g.id + ',' + pi + ',' + w + ')" title="Week ' + weekCounter + '">' +
-            '<span class="pw-num">' + weekCounter + '</span>' +
-            (isDone ? '<span class="pw-check">✓</span>' : '') +
-            '</div>';
-        }
-        bodyHtml += '</div></div>';
-      });
-      bodyHtml += '</div>';
-    } else if (gType === 'streak') {
-      const yr = new Date().getFullYear();
-      const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      // Weekly review tracker
-      bodyHtml = '<div class="streak-tracker">' +
-        '<div class="streak-section">' +
-        '<div class="streak-label">' + esc(g.streakWeeklyLabel||'Weekly Check-in') + '</div>' +
-        '<div class="streak-grid">';
-      // Show weeks of the year as a compact grid
-      for (let w = 1; w <= 52; w++) {
-        const wKey = yr + '-W' + String(w).padStart(2,'0');
-        const isDone = (g.streakWeeks||{})[wKey];
-        bodyHtml += '<div class="streak-cell ' + (isDone ? 'done' : '') + '" onclick="toggleStreakWeek(' + g.id + ',\'' + wKey + '\')" title="Week ' + w + '">' +
-          (isDone ? '✓' : '') + '</div>';
-      }
-      bodyHtml += '</div></div>' +
-        '<div class="streak-section" style="margin-top:12px">' +
-        '<div class="streak-label">' + esc(g.streakMonthlyLabel||'Monthly Deep Dive') + '</div>' +
-        '<div class="streak-months">';
-      MONTHS.forEach((m, i) => {
-        const mKey = yr + '-' + String(i+1).padStart(2,'0');
-        const isDone = (g.streakMonths||{})[mKey];
-        bodyHtml += '<div class="streak-month ' + (isDone ? 'done' : '') + '" onclick="toggleStreakMonth(' + g.id + ',\'' + mKey + '\')">' +
-          '<span>' + m + '</span>' +
-          (isDone ? '<span class="sm-check">✓</span>' : '') +
+    } else if (gType === 'log') {
+      const entries = (g.logEntries || []).slice().sort((a,b) => (a.date||'').localeCompare(b.date||''));
+      const isDesc = g.logMode === 'descending';
+      const start = g.logStart || 0;
+      const latest = entries.length > 0 ? entries[entries.length-1].value : start;
+      const sum = entries.reduce((s,e) => s + (parseFloat(e.value)||0), 0);
+      const target = g.logTarget || 0;
+      const unit = g.logUnit || '';
+      // Header summary
+      let summaryHtml;
+      if (isDesc) {
+        const lostSoFar = Math.max(0, start - latest);
+        summaryHtml = '<div class="log-summary">' +
+          '<div class="log-stat"><label>' + esc(g.logStartLabel||'Start') + '</label>' +
+            '<input type="number" value="' + (start||'') + '" placeholder="' + esc(unit) + '" onchange="updateLogStart(' + g.id + ',this.value)"></div>' +
+          '<div class="log-stat"><label>Current</label><div class="log-stat-val">' + (entries.length > 0 ? latest + ' ' + esc(unit) : '—') + '</div></div>' +
+          '<div class="log-stat"><label>Progress</label><div class="log-stat-val">' + lostSoFar + ' / ' + target + ' ' + esc(unit) + '</div></div>' +
           '</div>';
+      } else {
+        summaryHtml = '<div class="log-summary">' +
+          '<div class="log-stat"><label>Total</label><div class="log-stat-val">$' + sum.toLocaleString() + '</div></div>' +
+          '<div class="log-stat"><label>Target</label><div class="log-stat-val">$' + target.toLocaleString() + '</div></div>' +
+          '<div class="log-stat"><label>Entries</label><div class="log-stat-val">' + entries.length + '</div></div>' +
+          '</div>';
+      }
+      // Entry rows (newest first for display)
+      const rowsHtml = entries.slice().reverse().map(e =>
+        '<div class="log-row">' +
+          '<input type="date" value="' + esc(e.date||'') + '" onchange="updateLogEntry(' + g.id + ',\'' + esc(e.id) + '\',\'date\',this.value)">' +
+          '<input type="number" step="any" value="' + esc(String(e.value||'')) + '" onchange="updateLogEntry(' + g.id + ',\'' + esc(e.id) + '\',\'value\',this.value)">' +
+          '<input type="text" placeholder="' + (isDesc?'note':'source') + '" value="' + esc(e.note||'') + '" onchange="updateLogEntry(' + g.id + ',\'' + esc(e.id) + '\',\'note\',this.value)">' +
+          '<button class="chip-x" onclick="deleteLogEntry(' + g.id + ',\'' + esc(e.id) + '\')">&times;</button>' +
+        '</div>'
+      ).join('');
+      bodyHtml = '<div class="log-tracker">' + summaryHtml +
+        '<div class="log-rows">' + rowsHtml + '</div>' +
+        '<button class="btn btn-sm btn-outline log-add-btn" onclick="addLogEntry(' + g.id + ')">+ ' + esc(g.logEntryLabel||'Entry') + '</button>' +
+        '</div>';
+    } else if (gType === 'workouts') {
+      const weeks = g.workoutWeeks || 18;
+      const min = g.workoutMin || 3;
+      const max = g.workoutMax || 5;
+      const data = g.workoutData || {};
+      let weeksHit = 0, totalWorkouts = 0;
+      for (let w = 1; w <= weeks; w++) {
+        const ct = data[w] || 0;
+        totalWorkouts += ct;
+        if (ct >= min) weeksHit++;
+      }
+      bodyHtml = '<div class="workouts-tracker">' +
+        '<div class="workouts-summary">' +
+          '<span><strong>' + weeksHit + '</strong> / ' + weeks + ' weeks hit target</span>' +
+          '<span class="workouts-total">' + totalWorkouts + ' workouts logged</span>' +
+        '</div>' +
+        '<div class="workouts-grid">';
+      for (let w = 1; w <= weeks; w++) {
+        const ct = data[w] || 0;
+        const hit = ct >= min;
+        const over = ct >= max;
+        bodyHtml += '<div class="workout-week ' + (hit?'hit':'') + ' ' + (over?'over':'') + '" title="Week ' + w + ': ' + ct + ' / ' + min + '-' + max + '">' +
+          '<div class="ww-num">W' + w + '</div>' +
+          '<div class="ww-controls">' +
+            '<button class="ww-btn" onclick="adjustWorkoutWeek(' + g.id + ',' + w + ',-1)">−</button>' +
+            '<span class="ww-count">' + ct + '</span>' +
+            '<button class="ww-btn" onclick="adjustWorkoutWeek(' + g.id + ',' + w + ',1)">+</button>' +
+          '</div>' +
+        '</div>';
+      }
+      bodyHtml += '</div></div>';
+    } else if (gType === 'months') {
+      const data = g.monthsData || {};
+      const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const yr = new Date().getFullYear();
+      const nowMonth = new Date().getMonth();
+      let doneCt = 0, missedCt = 0, elapsed = 0;
+      MONTHS.forEach((_, i) => {
+        const key = yr + '-' + String(i+1).padStart(2,'0');
+        if (i <= nowMonth) elapsed++;
+        if (data[key] === 'done') doneCt++;
+        else if (data[key] === 'missed') missedCt++;
       });
-      bodyHtml += '</div></div></div>';
+      bodyHtml = '<div class="months-tracker">' +
+        '<div class="months-summary">' +
+          '<span><strong>' + doneCt + '</strong> done · <strong>' + missedCt + '</strong> missed · ' + (elapsed - doneCt - missedCt) + ' unmarked</span>' +
+        '</div>' +
+        '<div class="months-grid">' +
+        MONTHS.map((m, i) => {
+          const key = yr + '-' + String(i+1).padStart(2,'0');
+          const state = data[key] || '';
+          const future = i > nowMonth;
+          return '<div class="month-cell month-' + (state||'blank') + ' ' + (future?'future':'') + '" onclick="cycleMonthState(' + g.id + ',\'' + key + '\')" title="Click to cycle: blank → done → missed → blank">' +
+            '<span class="mc-label">' + m + '</span>' +
+            '<span class="mc-mark">' + (state==='done'?'✓':(state==='missed'?'✗':'')) + '</span>' +
+          '</div>';
+        }).join('') +
+        '</div></div>';
     } else if (gType === 'habit') {
       bodyHtml = '<div class="habit-driven-section">' +
         '<div class="habit-driven-stat">' + pct + '%' +
@@ -3547,40 +3755,30 @@ function renderGoals() {
             '</div>';
         }).join('') +
         '</div></div>';
-    } else if (gType === 'quarterly') {
-      const quarters = g.quarters || [];
-      let totalDone = 0;
-      quarters.forEach(q => {
-        if (q.event && q.event.done) totalDone++;
-        if (q.restaurant && q.restaurant.done) totalDone++;
-      });
-      bodyHtml = '<div class="quarterly-section">' +
-        '<div class="checklist-counter">' + totalDone + ' / 8 outings</div>' +
-        '<div class="quarterly-grid">' +
-        quarters.map((q, qi) => {
-          const ev = q.event || {name:'',done:false,date:''};
-          const rs = q.restaurant || {name:'',done:false,date:''};
-          return '<div class="quarter-card">' +
-            '<div class="quarter-label">Q' + (qi+1) + '</div>' +
-            '<div class="quarter-slot ' + (ev.done?'checked':'') + '">' +
-              '<div class="qs-row">' +
-                '<input type="checkbox" ' + (ev.done?'checked':'') + ' onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'event\',\'done\',this.checked)">' +
-                '<span class="qs-icon">🎟️</span>' +
-                '<input type="text" class="qs-name" value="' + esc(ev.name) + '" placeholder="Event..." onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'event\',\'name\',this.value)">' +
-              '</div>' +
-              '<input type="date" class="qs-date" value="' + esc(ev.date||'') + '" onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'event\',\'date\',this.value)">' +
-            '</div>' +
-            '<div class="quarter-slot ' + (rs.done?'checked':'') + '">' +
-              '<div class="qs-row">' +
-                '<input type="checkbox" ' + (rs.done?'checked':'') + ' onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'restaurant\',\'done\',this.checked)">' +
-                '<span class="qs-icon">🍽️</span>' +
-                '<input type="text" class="qs-name" value="' + esc(rs.name) + '" placeholder="New restaurant..." onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'restaurant\',\'name\',this.value)">' +
-              '</div>' +
-              '<input type="date" class="qs-date" value="' + esc(rs.date||'') + '" onchange="toggleQuarterField(' + g.id + ',' + qi + ',\'restaurant\',\'date\',this.value)">' +
-            '</div>' +
+    } else if (gType === 'multiList') {
+      const lists = g.lists || [];
+      bodyHtml = '<div class="multilist-tracker">';
+      lists.forEach((list, li) => {
+        const items = list.items || [];
+        const done = items.filter(it => it.done).length;
+        bodyHtml += '<div class="ml-column">' +
+          '<div class="ml-header"><span class="ml-icon">' + esc(list.icon||'') + '</span>' +
+            '<span class="ml-label">' + esc(list.label) + '</span>' +
+            '<span class="ml-count">' + done + ' / ' + (list.target||items.length) + '</span></div>' +
+          '<div class="ml-items">' +
+          items.map(it =>
+            '<div class="ml-item ' + (it.done?'checked':'') + '">' +
+              '<input type="checkbox" ' + (it.done?'checked':'') + ' onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'done\',this.checked)">' +
+              '<input type="text" class="ml-name" value="' + esc(it.name||'') + '" placeholder="Name..." onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
+              '<input type="date" class="ml-date" value="' + esc(it.date||'') + '" onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'date\',this.value)">' +
+              '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')">&times;</button>' +
+            '</div>'
+          ).join('') +
+          '</div>' +
+          '<button class="btn btn-sm btn-outline ml-add" onclick="addMultiListItem(' + g.id + ',' + li + ')">+ Add ' + esc(list.label||'').replace(/s$/,'') + '</button>' +
           '</div>';
-        }).join('') +
-        '</div></div>';
+      });
+      bodyHtml += '</div>';
     } else {
       const clItems = g.checklistItems || [];
       const done = clItems.filter(ci => ci.done).length;
@@ -3601,26 +3799,51 @@ function renderGoals() {
         '</div></div>';
     }
 
-    // Supporting habits section
-    let habitsHtml = '<div class="goal-linked-section">' +
-      '<div class="goal-section-label">Supporting Habits</div>' +
-      '<div class="chip-list">' +
-      linkedHabits.map(h =>
-        '<span class="habit-chip">' + esc(h.name) + ' <button class="chip-x" onclick="unlinkHabitFromGoal(' + g.id + ',' + h.id + ')">&times;</button></span>'
-      ).join('') +
-      '</div>' +
-      '<button class="btn btn-sm btn-outline" style="font-size:10px;padding:2px 8px" onclick="openHabitLinkModal(' + g.id + ')">+ Link Habits</button>' +
-      '</div>';
-
-    let tasksHtml = '';
-    if (linkedTasks.length > 0) {
-      tasksHtml = '<div class="goal-linked-section">' +
-        '<div class="goal-section-label">Action Items</div>' +
-        '<div class="chip-list">' +
-        linkedTasks.map(t =>
-          '<span class="task-chip" data-status="' + t.status + '">' + esc(t.name) + '</span>'
-        ).join('') +
-        '</div></div>';
+    // Supporting habits — show monthly performance for each linked habit
+    let habitsHtml = '';
+    if (linkedHabits.length > 0 || true) {
+      const now = new Date();
+      const yr = now.getFullYear();
+      const mo = now.getMonth(); // 0-indexed
+      const monthName = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo];
+      const daysInMonth = new Date(yr, mo+1, 0).getDate();
+      const ymPrefix = yr + '-' + String(mo+1).padStart(2,'0');
+      habitsHtml = '<div class="goal-linked-section">' +
+        '<div class="goal-section-label">Supporting Habits — ' + monthName + '</div>';
+      if (linkedHabits.length === 0) {
+        habitsHtml += '<div class="habit-empty">No habits linked yet.</div>';
+      } else {
+        habitsHtml += '<div class="habit-monthly-list">';
+        linkedHabits.forEach(h => {
+          let applicable = 0, doneCt = 0;
+          let dotsHtml = '';
+          for (let d = 1; d <= daysInMonth; d++) {
+            const dk = ymPrefix + '-' + String(d).padStart(2,'0');
+            const dow = new Date(yr, mo, d).getDay();
+            const dayIdx = dow === 0 ? 6 : dow - 1;
+            const isFuture = d > now.getDate();
+            const isSkipDay = h.skipDays && h.skipDays[dayIdx];
+            const isDone = !!state.habitLog[dk + '_' + h.id];
+            let cls = 'hd-dot';
+            if (isSkipDay) cls += ' skip';
+            else if (isFuture) cls += ' future';
+            else { applicable++; if (isDone) { cls += ' done'; doneCt++; } else { cls += ' missed'; } }
+            dotsHtml += '<span class="' + cls + '" title="' + dk + '"></span>';
+          }
+          const pctH = applicable > 0 ? Math.round((doneCt/applicable)*100) : 0;
+          habitsHtml += '<div class="habit-monthly-row">' +
+            '<div class="hm-head">' +
+              '<span class="hm-name">' + esc(h.name) + '</span>' +
+              '<span class="hm-stat">' + doneCt + '/' + applicable + ' · ' + pctH + '%</span>' +
+              '<button class="chip-x" onclick="unlinkHabitFromGoal(' + g.id + ',' + h.id + ')" title="Unlink">&times;</button>' +
+            '</div>' +
+            '<div class="hm-dots">' + dotsHtml + '</div>' +
+          '</div>';
+        });
+        habitsHtml += '</div>';
+      }
+      habitsHtml += '<button class="btn btn-sm btn-outline" style="font-size:10px;padding:2px 8px;margin-top:6px" onclick="openHabitLinkModal(' + g.id + ')">+ Link Habits</button>' +
+        '</div>';
     }
 
     const whyText = g.why || '';
@@ -3636,9 +3859,7 @@ function renderGoals() {
       '<div class="goal-percent">' + pct + '% complete</div>' +
       bodyHtml +
       habitsHtml +
-      tasksHtml +
       '<div class="goal-actions">' +
-      '<button class="btn btn-sm btn-primary" onclick="quickAddGoalTask(' + g.id + ')">+ Task</button>' +
       '<button class="btn btn-sm btn-outline" onclick="deleteGoal(' + g.id + ')">Delete</button></div>' +
       '</div>';
   }).join('');
@@ -3674,31 +3895,85 @@ function updateNumericStart(goalId, value) {
   }
 }
 
-function togglePhaseWeek(goalId, phaseIdx, weekNum) {
+// LOG goal helpers
+function addLogEntry(goalId) {
   const g = state.goals.find(x => x.id === goalId);
-  if (!g || !g.phases || !g.phases[phaseIdx]) return;
-  const phase = g.phases[phaseIdx];
-  if (!phase.completed) phase.completed = [];
-  const idx = phase.completed.indexOf(weekNum);
-  if (idx >= 0) phase.completed.splice(idx, 1);
-  else phase.completed.push(weekNum);
-  phase.completed.sort((a,b) => a - b);
+  if (!g) return;
+  if (!Array.isArray(g.logEntries)) g.logEntries = [];
+  g.logEntries.push({ id: 'le-' + Math.random().toString(36).slice(2,9), date: todayKey(), value: 0, note: '' });
+  save(); renderGoals();
+}
+function updateLogEntry(goalId, entryId, field, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.logEntries)) return;
+  const e = g.logEntries.find(x => x.id === entryId);
+  if (!e) return;
+  if (field === 'value') e.value = parseFloat(value) || 0;
+  else e[field] = value;
+  save(); renderGoals();
+}
+function deleteLogEntry(goalId, entryId) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !Array.isArray(g.logEntries)) return;
+  g.logEntries = g.logEntries.filter(x => x.id !== entryId);
+  save(); renderGoals();
+}
+function updateLogStart(goalId, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g) return;
+  g.logStart = parseFloat(value) || 0;
   save(); renderGoals();
 }
 
-function toggleStreakWeek(goalId, weekKey) {
+// WORKOUTS goal helpers
+function adjustWorkoutWeek(goalId, weekNum, delta) {
   const g = state.goals.find(x => x.id === goalId);
   if (!g) return;
-  if (!g.streakWeeks) g.streakWeeks = {};
-  g.streakWeeks[weekKey] = !g.streakWeeks[weekKey];
+  if (!g.workoutData) g.workoutData = {};
+  const cur = g.workoutData[weekNum] || 0;
+  const next = Math.max(0, Math.min((g.workoutMax||5) + 2, cur + delta));
+  if (next === 0) delete g.workoutData[weekNum];
+  else g.workoutData[weekNum] = next;
   save(); renderGoals();
 }
 
-function toggleStreakMonth(goalId, monthKey) {
+// MONTHS goal helper — cycle blank → done → missed → blank
+function cycleMonthState(goalId, monthKey) {
   const g = state.goals.find(x => x.id === goalId);
   if (!g) return;
-  if (!g.streakMonths) g.streakMonths = {};
-  g.streakMonths[monthKey] = !g.streakMonths[monthKey];
+  if (!g.monthsData) g.monthsData = {};
+  const cur = g.monthsData[monthKey] || '';
+  const next = cur === '' ? 'done' : (cur === 'done' ? 'missed' : '');
+  if (next === '') delete g.monthsData[monthKey];
+  else g.monthsData[monthKey] = next;
+  save(); renderGoals();
+}
+
+// MULTILIST goal helpers
+function addMultiListItem(goalId, listIdx) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !g.lists || !g.lists[listIdx]) return;
+  if (!Array.isArray(g.lists[listIdx].items)) g.lists[listIdx].items = [];
+  g.lists[listIdx].items.push({ id: 'mi-' + Math.random().toString(36).slice(2,9), name:'', done:false, date:'' });
+  save(); renderGoals();
+}
+function updateMultiListItem(goalId, listIdx, itemId, field, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !g.lists || !g.lists[listIdx]) return;
+  const it = (g.lists[listIdx].items||[]).find(x => x.id === itemId);
+  if (!it) return;
+  if (field === 'done') {
+    it.done = !!value;
+    if (it.done && !it.date) it.date = todayKey();
+  } else {
+    it[field] = value;
+  }
+  save(); renderGoals();
+}
+function deleteMultiListItem(goalId, listIdx, itemId) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !g.lists || !g.lists[listIdx]) return;
+  g.lists[listIdx].items = (g.lists[listIdx].items||[]).filter(x => x.id !== itemId);
   save(); renderGoals();
 }
 
