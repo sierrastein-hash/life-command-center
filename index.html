@@ -880,17 +880,23 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .ml-icon { font-size:14px; }
 .ml-label { font-size:12px; font-weight:700; color:var(--text); flex:1; }
 .ml-count { font-size:11px; font-weight:600; color:var(--terra); }
-.ml-items { display:flex; flex-direction:column; gap:4px; margin-bottom:8px; }
-.ml-item { display:grid; grid-template-columns:auto 1fr auto auto; gap:6px; align-items:center; padding:4px; border-radius:4px; }
-.ml-item:hover { background:var(--card); }
-.ml-item input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; }
-.ml-name { padding:3px 6px; border:1px solid transparent; border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); min-width:0; }
-.ml-name:focus, .ml-name:hover { border-color:var(--border); background:var(--card); outline:none; }
+.ml-items { display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
+.ml-item { display:flex; flex-direction:column; gap:4px; padding:8px; border-radius:6px; background:var(--card); border:1px solid var(--border-light); }
+.ml-item:hover { border-color:var(--border); }
+.ml-item:focus-within { border-color:var(--terra); }
+.ml-item input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; flex-shrink:0; }
+.ml-row-top { display:flex; align-items:center; gap:6px; }
+.ml-row-bot { display:flex; gap:6px; align-items:center; padding-left:22px; }
+.ml-name { flex:1; padding:5px 8px; border:1px solid var(--border); border-radius:4px; font-size:13px; font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--text); min-width:0; }
+.ml-name:focus { border-color:var(--terra); background:var(--card); outline:none; }
 .ml-name::placeholder { color:var(--text-faint); font-style:italic; }
-.ml-date { font-size:10px; padding:2px 4px; border:1px solid var(--border); border-radius:3px; background:var(--card); color:var(--text-faint); font-family:'DM Sans',sans-serif; }
+.ml-loc { flex:1; padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:11px; font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--text-mid); min-width:0; }
+.ml-loc:focus { border-color:var(--terra); background:var(--card); outline:none; }
+.ml-loc::placeholder { color:var(--text-faint); font-style:italic; }
+.ml-date { font-size:11px; padding:4px 6px; border:1px solid var(--border); border-radius:4px; background:var(--surface); color:var(--text-faint); font-family:'DM Sans',sans-serif; flex-shrink:0; }
 .ml-item.checked .ml-name { text-decoration:line-through; color:var(--text-faint); }
 .ml-item.checked .ml-date { color:var(--terra); border-color:var(--terra-glow); }
-.ml-item .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:14px; }
+.ml-item .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:16px; flex-shrink:0; }
 .ml-item .chip-x:hover { color:var(--plum); }
 .ml-add { font-size:11px; width:100%; }
 @media (max-width:600px) { .multilist-tracker { grid-template-columns:1fr; } }
@@ -2307,7 +2313,10 @@ function migrateGoals(p) {
       if (!Array.isArray(g.lists)) g.lists = [];
       g.lists.forEach(l => {
         if (!Array.isArray(l.items)) l.items = [];
-        l.items.forEach(it => { if (!it.id) it.id = 'mi-' + Math.random().toString(36).slice(2,9); });
+        l.items.forEach(it => {
+          if (!it.id) it.id = 'mi-' + Math.random().toString(36).slice(2,9);
+          if (it.location === undefined) it.location = '';
+        });
       });
     }
     if (!g.goalType) g.goalType = 'checklist';
@@ -3763,6 +3772,11 @@ function renderGoals() {
       lists.forEach((list, li) => {
         const items = list.items || [];
         const done = items.filter(it => it.done).length;
+        const singular = (list.label||'').replace(/s$/,'');
+        // Different placeholders per list
+        const isEvents = list.key === 'events';
+        const namePh = isEvents ? 'Event (e.g. Avalanche game)' : 'Restaurant';
+        const locPh = isEvents ? 'Spot / venue' : 'Neighborhood (optional)';
         bodyHtml += '<div class="ml-column">' +
           '<div class="ml-header"><span class="ml-icon">' + esc(list.icon||'') + '</span>' +
             '<span class="ml-label">' + esc(list.label) + '</span>' +
@@ -3770,14 +3784,19 @@ function renderGoals() {
           '<div class="ml-items">' +
           items.map(it =>
             '<div class="ml-item ' + (it.done?'checked':'') + '">' +
-              '<input type="checkbox" ' + (it.done?'checked':'') + ' onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'done\',this.checked)">' +
-              '<input type="text" class="ml-name" value="' + esc(it.name||'') + '" placeholder="Name..." onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
-              '<input type="date" class="ml-date" value="' + esc(it.date||'') + '" onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'date\',this.value)">' +
-              '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')">&times;</button>' +
+              '<div class="ml-row-top">' +
+                '<input type="checkbox" ' + (it.done?'checked':'') + ' onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'done\',this.checked)">' +
+                '<input type="text" class="ml-name" value="' + esc(it.name||'') + '" placeholder="' + esc(namePh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
+                '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')" title="Delete">&times;</button>' +
+              '</div>' +
+              '<div class="ml-row-bot">' +
+                '<input type="text" class="ml-loc" value="' + esc(it.location||'') + '" placeholder="' + esc(locPh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'location\',this.value)">' +
+                '<input type="date" class="ml-date" value="' + esc(it.date||'') + '" onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'date\',this.value)">' +
+              '</div>' +
             '</div>'
           ).join('') +
           '</div>' +
-          '<button class="btn btn-sm btn-outline ml-add" onclick="addMultiListItem(' + g.id + ',' + li + ')">+ Add ' + esc(list.label||'').replace(/s$/,'') + '</button>' +
+          '<button class="btn btn-sm btn-outline ml-add" onclick="addMultiListItem(' + g.id + ',' + li + ')">+ Add ' + esc(singular) + '</button>' +
           '</div>';
       });
       bodyHtml += '</div>';
@@ -3971,6 +3990,15 @@ function updateMultiListItem(goalId, listIdx, itemId, field, value) {
     it[field] = value;
   }
   save(); renderGoals();
+}
+// Silent variant — saves without re-rendering (so cursor/focus stays put while typing)
+function updateMultiListItemSilent(goalId, listIdx, itemId, field, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g || !g.lists || !g.lists[listIdx]) return;
+  const it = (g.lists[listIdx].items||[]).find(x => x.id === itemId);
+  if (!it) return;
+  it[field] = value;
+  save();
 }
 function deleteMultiListItem(goalId, listIdx, itemId) {
   const g = state.goals.find(x => x.id === goalId);
