@@ -837,23 +837,20 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .log-row .chip-x:hover { color:var(--plum); }
 .log-add-btn { font-size:11px; }
 
-/* WORKOUTS goal — flat N-week grid */
-.workouts-tracker { margin:12px 0; }
-.workouts-summary { display:flex; justify-content:space-between; font-size:12px; color:var(--text-mid); margin-bottom:8px; }
-.workouts-summary strong { color:var(--terra); font-size:14px; }
-.workouts-total { color:var(--text-faint); }
-.workouts-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; }
-.workout-week { background:var(--surface); border:1px solid var(--border-light); border-radius:6px; padding:6px 4px; text-align:center; }
-.workout-week.hit { background:var(--terra-glow); border-color:var(--terra); }
-.workout-week.over { background:linear-gradient(135deg, var(--terra-glow), rgba(122,150,104,0.18)); border-color:var(--sage); }
-.workout-week .ww-num { font-size:9px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
-.workout-week.hit .ww-num { color:var(--terra); }
-.workout-week .ww-controls { display:flex; align-items:center; justify-content:center; gap:3px; }
-.workout-week .ww-btn { width:18px; height:18px; border:1px solid var(--border); background:var(--card); border-radius:4px; cursor:pointer; font-size:11px; font-weight:600; color:var(--text-mid); padding:0; line-height:1; }
-.workout-week .ww-btn:hover { border-color:var(--terra); color:var(--terra); }
-.workout-week .ww-count { font-size:14px; font-weight:700; color:var(--text); min-width:14px; }
-.workout-week.hit .ww-count { color:var(--terra); }
-@media (max-width:600px) { .workouts-grid { grid-template-columns:repeat(3, 1fr); } }
+/* SESSIONS goal — single counter (Sad to Savage) */
+.sessions-tracker { margin:12px 0; padding:14px; background:var(--surface); border-radius:10px; }
+.sessions-display { display:flex; align-items:center; justify-content:center; gap:18px; }
+.sess-btn { width:44px; height:44px; border-radius:50%; border:1px solid var(--border); background:var(--card); cursor:pointer; font-size:22px; font-weight:600; color:var(--text); padding:0; line-height:1; transition:all 0.15s; }
+.sess-btn:hover:not(:disabled) { border-color:var(--terra); color:var(--terra); transform:scale(1.05); }
+.sess-btn:disabled { opacity:0.3; cursor:not-allowed; }
+.sess-plus { background:var(--terra); color:var(--card); border-color:var(--terra); }
+.sess-plus:hover:not(:disabled) { background:var(--terra-dim); color:var(--card); }
+.sess-count-block { text-align:center; min-width:140px; }
+.sess-count { font-size:48px; font-weight:700; color:var(--terra); font-family:'Playfair Display',serif; line-height:1; }
+.sess-of { font-size:12px; color:var(--text-faint); margin-top:4px; display:flex; justify-content:center; align-items:center; gap:4px; }
+.sess-target { width:48px; padding:2px 4px; border:1px solid transparent; border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); text-align:center; }
+.sess-target:hover, .sess-target:focus { border-color:var(--border); background:var(--card); outline:none; }
+.sess-foot { text-align:center; font-size:12px; color:var(--text-faint); margin-top:10px; }
 
 /* MONTHS goal — tri-state cells */
 .months-tracker { margin:12px 0; }
@@ -873,33 +870,41 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .month-cell.future { opacity:0.5; }
 @media (max-width:600px) { .months-grid { grid-template-columns:repeat(4, 1fr); } }
 
-/* MULTILIST goal — two-column lists */
-.multilist-tracker { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:12px 0; }
-.ml-column { background:var(--surface); border:1px solid var(--border-light); border-radius:8px; padding:10px; }
-.ml-header { display:flex; align-items:center; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
-.ml-icon { font-size:14px; }
-.ml-label { font-size:12px; font-weight:700; color:var(--text); flex:1; }
-.ml-count { font-size:11px; font-weight:600; color:var(--terra); }
-.ml-items { display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
-.ml-item { display:flex; flex-direction:column; gap:4px; padding:8px; border-radius:6px; background:var(--card); border:1px solid var(--border-light); }
-.ml-item:hover { border-color:var(--border); }
-.ml-item:focus-within { border-color:var(--terra); }
-.ml-item input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; flex-shrink:0; }
-.ml-row-top { display:flex; align-items:center; gap:6px; }
-.ml-row-bot { display:flex; gap:6px; align-items:center; padding-left:22px; }
-.ml-name { flex:1; padding:5px 8px; border:1px solid var(--border); border-radius:4px; font-size:13px; font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--text); min-width:0; }
-.ml-name:focus { border-color:var(--terra); background:var(--card); outline:none; }
-.ml-name::placeholder { color:var(--text-faint); font-style:italic; }
-.ml-loc { flex:1; padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:11px; font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--text-mid); min-width:0; }
-.ml-loc:focus { border-color:var(--terra); background:var(--card); outline:none; }
-.ml-loc::placeholder { color:var(--text-faint); font-style:italic; }
-.ml-date { font-size:11px; padding:4px 6px; border:1px solid var(--border); border-radius:4px; background:var(--surface); color:var(--text-faint); font-family:'DM Sans',sans-serif; flex-shrink:0; }
-.ml-item.checked .ml-name { text-decoration:line-through; color:var(--text-faint); }
-.ml-item.checked .ml-date { color:var(--terra); border-color:var(--terra-glow); }
-.ml-item .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:16px; flex-shrink:0; }
-.ml-item .chip-x:hover { color:var(--plum); }
-.ml-add { font-size:11px; width:100%; }
-@media (max-width:600px) { .multilist-tracker { grid-template-columns:1fr; } }
+/* FEED goal (multiList rendered as chronological feed — Denver) */
+.feed-tracker { margin:12px 0; }
+.feed-header { display:flex; gap:14px; padding:10px 12px; background:var(--surface); border-radius:8px; margin-bottom:8px; }
+.feed-stat { display:flex; align-items:center; gap:6px; flex:1; }
+.feed-stat-icon { font-size:16px; }
+.feed-stat-label { font-size:12px; font-weight:600; color:var(--text-mid); flex:1; }
+.feed-stat-count { font-size:14px; font-weight:700; color:var(--terra); font-family:'Playfair Display',serif; }
+.feed-add { display:flex; gap:8px; margin-bottom:10px; }
+.feed-add .btn { flex:1; }
+.feed-list { display:flex; flex-direction:column; gap:6px; }
+.feed-empty { font-size:12px; color:var(--text-faint); font-style:italic; text-align:center; padding:14px; background:var(--surface); border-radius:8px; }
+.feed-row { display:flex; flex-direction:column; gap:4px; padding:10px; border-radius:8px; background:var(--card); border:1px solid var(--border-light); transition:border-color 0.15s; }
+.feed-row:hover { border-color:var(--border); }
+.feed-row:focus-within { border-color:var(--terra); }
+.feed-row.checked { background:var(--terra-glow); border-color:var(--terra); }
+.feed-row.checked .feed-name { text-decoration:line-through; color:var(--text-mid); }
+.feed-row-main { display:flex; align-items:center; gap:8px; }
+.feed-row input[type="checkbox"] { accent-color:var(--terra); cursor:pointer; flex-shrink:0; }
+.feed-badge { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:6px; font-size:14px; flex-shrink:0; }
+.feed-badge-events { background:rgba(139,106,170,0.12); }
+.feed-badge-restaurants { background:rgba(212,158,89,0.14); }
+.feed-name { flex:1; padding:5px 8px; border:1px solid var(--border); border-radius:4px; font-size:13px; font-weight:600; font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--text); min-width:0; }
+.feed-name:focus { border-color:var(--terra); background:var(--card); outline:none; }
+.feed-name::placeholder { color:var(--text-faint); font-style:italic; font-weight:400; }
+.feed-date { font-size:11px; padding:4px 6px; border:1px solid var(--border); border-radius:4px; background:var(--surface); color:var(--text-faint); font-family:'DM Sans',sans-serif; flex-shrink:0; }
+.feed-row.checked .feed-date { color:var(--terra); }
+.feed-loc { padding:4px 8px 4px 42px; border:1px solid transparent; border-radius:4px; font-size:11px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); width:100%; box-sizing:border-box; }
+.feed-loc:focus, .feed-loc:hover { border-color:var(--border); background:var(--surface); outline:none; }
+.feed-loc::placeholder { color:var(--text-faint); font-style:italic; }
+.feed-row .chip-x { background:none; border:none; color:var(--text-faint); cursor:pointer; padding:0 4px; font-size:16px; flex-shrink:0; }
+.feed-row .chip-x:hover { color:var(--plum); }
+@media (max-width:600px) {
+  .feed-header { flex-direction:column; gap:8px; }
+  .feed-add { flex-direction:column; }
+}
 
 /* Supporting habits — monthly performance rows */
 .habit-monthly-list { display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
@@ -2059,8 +2064,8 @@ function defaultState() {
       { id:201, title:'Average 8 Hours of Sleep', category:'health', goalType:'mom', isActive:false, linkedHabits:[109], momData:{}, momUnit:'hrs avg', momTarget:8 },
       { id:202, title:'10k Steps Monthly Average', category:'health', goalType:'mom', isActive:false, linkedHabits:[], momData:{}, momUnit:'steps', momTarget:10000 },
 
-      // WORKOUTS goal — flat N-week tracker w/ workouts-per-week count
-      { id:210, title:'Finish Sad to Savage Course', category:'growth', goalType:'workouts', isActive:false, linkedHabits:[], workoutWeeks:18, workoutMin:3, workoutMax:5, workoutData:{} },
+      // WORKOUTS goal — single session counter (program progress, no dates)
+      { id:210, title:'Finish Sad to Savage Course', category:'growth', goalType:'workouts', isActive:false, linkedHabits:[], sessionTarget:72, sessionCount:0 },
 
       // MONTHS goal — 12-month tri-state tracker (done/missed/blank)
       { id:211, title:'Build Financial Review Habit', category:'money', goalType:'months', isActive:false, linkedHabits:[111], monthsData:{} },
@@ -2194,7 +2199,7 @@ function migrateRoutines(p) {
 function migrateGoals(p) {
   if (!p.goals) p.goals = [];
   // Force reload goals from defaults if version is outdated
-  if ((p._goalVersion || 0) < 9) {
+  if ((p._goalVersion || 0) < 10) {
     const ds = defaultState();
     // Preserve user-entered data where possible
     const oldGoalMap = {};
@@ -2215,18 +2220,18 @@ function migrateGoals(p) {
         }
       }
       if (ng.goalType === 'workouts') {
-        ng.workoutData = (old.workoutData && typeof old.workoutData === 'object') ? old.workoutData : {};
-        // Backfill from phased: each phase had completed week numbers (1..6); we'll mark those weeks as workoutMin (3)
-        if (old.goalType === 'phased' && Array.isArray(old.phases)) {
-          let weekCounter = 0;
-          old.phases.forEach(ph => {
-            for (let w = 1; w <= (ph.weeks||0); w++) {
-              weekCounter++;
-              if ((ph.completed||[]).includes(w) && !ng.workoutData[weekCounter]) {
-                ng.workoutData[weekCounter] = ng.workoutMin || 3;
-              }
-            }
-          });
+        // Carry forward sessionCount if present
+        if (typeof old.sessionCount === 'number') ng.sessionCount = old.sessionCount;
+        if (typeof old.sessionTarget === 'number' && old.sessionTarget > 0) ng.sessionTarget = old.sessionTarget;
+        // Roll up old per-week workoutData into a single sessionCount
+        if (!ng.sessionCount && old.workoutData && typeof old.workoutData === 'object') {
+          ng.sessionCount = Object.values(old.workoutData).reduce((s,v) => s + (parseInt(v,10)||0), 0);
+        }
+        // Backfill from even older phased shape: count completed weeks × min/week
+        if (!ng.sessionCount && old.goalType === 'phased' && Array.isArray(old.phases)) {
+          let total = 0;
+          old.phases.forEach(ph => { total += ((ph.completed||[]).length) * 3; });
+          ng.sessionCount = total;
         }
       }
       if (ng.goalType === 'months') {
@@ -2280,7 +2285,7 @@ function migrateGoals(p) {
       if (old.why) ng.why = old.why;
       return ng;
     });
-    p._goalVersion = 9;
+    p._goalVersion = 10;
     if (p.nextId < 213) p.nextId = 213;
     // Ensure sprint structure
     if (!p.sprint) p.sprint = ds.sprint;
@@ -2303,10 +2308,10 @@ function migrateGoals(p) {
       g.logEntries.forEach(e => { if (!e.id) e.id = 'le-' + Math.random().toString(36).slice(2,9); });
     }
     if (g.goalType === 'workouts') {
-      if (!g.workoutData || typeof g.workoutData !== 'object') g.workoutData = {};
-      if (!g.workoutWeeks) g.workoutWeeks = 18;
-      if (!g.workoutMin) g.workoutMin = 3;
-      if (!g.workoutMax) g.workoutMax = 5;
+      if (typeof g.sessionCount !== 'number') g.sessionCount = 0;
+      if (typeof g.sessionTarget !== 'number' || g.sessionTarget <= 0) g.sessionTarget = 72;
+      // Cleanup obsolete fields from old workouts shape
+      delete g.workoutData; delete g.workoutWeeks; delete g.workoutMin; delete g.workoutMax;
     }
     if (g.goalType === 'months' && (!g.monthsData || typeof g.monthsData !== 'object')) g.monthsData = {};
     if (g.goalType === 'multiList') {
@@ -2975,7 +2980,7 @@ function renderProjects() {
           pct = g.logTarget > 0 ? Math.round((sum/g.logTarget)*100) : 0;
         }
       }
-      else if (g.goalType === 'workouts') { const w = g.workoutWeeks||18, mn = g.workoutMin||3, d = g.workoutData||{}; let h = 0; for (let i=1;i<=w;i++) if ((d[i]||0)>=mn) h++; pct = Math.round((h/w)*100); }
+      else if (g.goalType === 'workouts') { const c = g.sessionCount||0, t = g.sessionTarget||72; pct = t > 0 ? Math.round((c/t)*100) : 0; }
       else if (g.goalType === 'months') { const data = g.monthsData||{}, nm = new Date().getMonth(); let el=0,dn=0; for (let i=0;i<=nm;i++){ const k = new Date().getFullYear()+'-'+String(i+1).padStart(2,'0'); el++; if (data[k]==='done') dn++; } pct = el>0 ? Math.round((dn/el)*100) : 0; }
       else if (g.goalType === 'multiList') { const ls = g.lists||[]; let t=0,dn=0; ls.forEach(l => { t += l.target||0; dn += (l.items||[]).filter(i=>i.done).length; }); pct = t>0 ? Math.round((dn/t)*100) : 0; }
 
@@ -3442,9 +3447,8 @@ function renderGoals() {
           completedItems += entries.reduce((s,e) => s + (parseFloat(e.value)||0), 0);
         }
       } else if (gType === 'workouts') {
-        totalItems += g.workoutWeeks || 18;
-        const data = g.workoutData||{}, mn = g.workoutMin||3;
-        for (let i = 1; i <= (g.workoutWeeks||18); i++) if ((data[i]||0) >= mn) completedItems++;
+        totalItems += g.sessionTarget || 72;
+        completedItems += g.sessionCount || 0;
       } else if (gType === 'months') {
         totalItems += 12;
         Object.values(g.monthsData||{}).forEach(v => { if (v === 'done') completedItems++; });
@@ -3473,7 +3477,7 @@ function renderGoals() {
       else if (gType === 'checklist' && (g.checklistItems||[]).some(ci => ci.done)) goalsOnTrack++;
       else if (gType === 'mom' && Object.keys(g.momData||{}).length > 0) goalsOnTrack++;
       else if (gType === 'log' && (g.logEntries||[]).length > 0) goalsOnTrack++;
-      else if (gType === 'workouts' && Object.keys(g.workoutData||{}).length > 0) goalsOnTrack++;
+      else if (gType === 'workouts' && (g.sessionCount||0) > 0) goalsOnTrack++;
       else if (gType === 'months' && Object.values(g.monthsData||{}).some(v => v === 'done')) goalsOnTrack++;
       else if (gType === 'multiList' && (g.lists||[]).some(l => (l.items||[]).some(it => it.done))) goalsOnTrack++;
       else if (gType === 'habit') goalsOnTrack++;
@@ -3564,12 +3568,9 @@ function renderGoals() {
         pct = g.logTarget > 0 ? Math.round((sum / g.logTarget) * 100) : 0;
       }
     } else if (gType === 'workouts') {
-      const weeks = g.workoutWeeks || 18;
-      const min = g.workoutMin || 3;
-      const data = g.workoutData || {};
-      let weeksHit = 0;
-      for (let w = 1; w <= weeks; w++) if ((data[w]||0) >= min) weeksHit++;
-      pct = Math.round((weeksHit / weeks) * 100);
+      const count = g.sessionCount || 0;
+      const target = g.sessionTarget || 72;
+      pct = target > 0 ? Math.round((count / target) * 100) : 0;
     } else if (gType === 'months') {
       const data = g.monthsData || {};
       const yr = new Date().getFullYear();
@@ -3676,36 +3677,20 @@ function renderGoals() {
         '<button class="btn btn-sm btn-outline log-add-btn" onclick="addLogEntry(' + g.id + ')">+ ' + esc(g.logEntryLabel||'Entry') + '</button>' +
         '</div>';
     } else if (gType === 'workouts') {
-      const weeks = g.workoutWeeks || 18;
-      const min = g.workoutMin || 3;
-      const max = g.workoutMax || 5;
-      const data = g.workoutData || {};
-      let weeksHit = 0, totalWorkouts = 0;
-      for (let w = 1; w <= weeks; w++) {
-        const ct = data[w] || 0;
-        totalWorkouts += ct;
-        if (ct >= min) weeksHit++;
-      }
-      bodyHtml = '<div class="workouts-tracker">' +
-        '<div class="workouts-summary">' +
-          '<span><strong>' + weeksHit + '</strong> / ' + weeks + ' weeks hit target</span>' +
-          '<span class="workouts-total">' + totalWorkouts + ' workouts logged</span>' +
-        '</div>' +
-        '<div class="workouts-grid">';
-      for (let w = 1; w <= weeks; w++) {
-        const ct = data[w] || 0;
-        const hit = ct >= min;
-        const over = ct >= max;
-        bodyHtml += '<div class="workout-week ' + (hit?'hit':'') + ' ' + (over?'over':'') + '" title="Week ' + w + ': ' + ct + ' / ' + min + '-' + max + '">' +
-          '<div class="ww-num">W' + w + '</div>' +
-          '<div class="ww-controls">' +
-            '<button class="ww-btn" onclick="adjustWorkoutWeek(' + g.id + ',' + w + ',-1)">−</button>' +
-            '<span class="ww-count">' + ct + '</span>' +
-            '<button class="ww-btn" onclick="adjustWorkoutWeek(' + g.id + ',' + w + ',1)">+</button>' +
+      const count = g.sessionCount || 0;
+      const target = g.sessionTarget || 72;
+      const remaining = Math.max(0, target - count);
+      bodyHtml = '<div class="sessions-tracker">' +
+        '<div class="sessions-display">' +
+          '<button class="sess-btn sess-minus" onclick="adjustSessionCount(' + g.id + ',-1)" ' + (count <= 0 ? 'disabled' : '') + '>−</button>' +
+          '<div class="sess-count-block">' +
+            '<div class="sess-count">' + count + '</div>' +
+            '<div class="sess-of">of <input type="number" class="sess-target" value="' + target + '" min="1" onchange="updateSessionTarget(' + g.id + ',this.value)"> sessions</div>' +
           '</div>' +
+          '<button class="sess-btn sess-plus" onclick="adjustSessionCount(' + g.id + ',1)">+</button>' +
+        '</div>' +
+        '<div class="sess-foot">' + (remaining === 0 ? '🎉 Program complete!' : remaining + ' sessions to go') + '</div>' +
         '</div>';
-      }
-      bodyHtml += '</div></div>';
     } else if (gType === 'months') {
       const data = g.monthsData || {};
       const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -3768,38 +3753,59 @@ function renderGoals() {
         '</div></div>';
     } else if (gType === 'multiList') {
       const lists = g.lists || [];
-      bodyHtml = '<div class="multilist-tracker">';
-      lists.forEach((list, li) => {
+      // Header summary — counts per bucket
+      let headerHtml = '<div class="feed-header">';
+      lists.forEach(list => {
         const items = list.items || [];
         const done = items.filter(it => it.done).length;
-        const singular = (list.label||'').replace(/s$/,'');
-        // Different placeholders per list
-        const isEvents = list.key === 'events';
-        const namePh = isEvents ? 'Event (e.g. Avalanche game)' : 'Restaurant';
-        const locPh = isEvents ? 'Spot / venue' : 'Neighborhood (optional)';
-        bodyHtml += '<div class="ml-column">' +
-          '<div class="ml-header"><span class="ml-icon">' + esc(list.icon||'') + '</span>' +
-            '<span class="ml-label">' + esc(list.label) + '</span>' +
-            '<span class="ml-count">' + done + ' / ' + (list.target||items.length) + '</span></div>' +
-          '<div class="ml-items">' +
-          items.map(it =>
-            '<div class="ml-item ' + (it.done?'checked':'') + '">' +
-              '<div class="ml-row-top">' +
-                '<input type="checkbox" ' + (it.done?'checked':'') + ' onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'done\',this.checked)">' +
-                '<input type="text" class="ml-name" value="' + esc(it.name||'') + '" placeholder="' + esc(namePh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
-                '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')" title="Delete">&times;</button>' +
-              '</div>' +
-              '<div class="ml-row-bot">' +
-                '<input type="text" class="ml-loc" value="' + esc(it.location||'') + '" placeholder="' + esc(locPh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'location\',this.value)">' +
-                '<input type="date" class="ml-date" value="' + esc(it.date||'') + '" onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'date\',this.value)">' +
-              '</div>' +
-            '</div>'
-          ).join('') +
-          '</div>' +
-          '<button class="btn btn-sm btn-outline ml-add" onclick="addMultiListItem(' + g.id + ',' + li + ')">+ Add ' + esc(singular) + '</button>' +
+        headerHtml += '<div class="feed-stat">' +
+          '<span class="feed-stat-icon">' + esc(list.icon||'') + '</span>' +
+          '<span class="feed-stat-label">' + esc(list.label) + '</span>' +
+          '<span class="feed-stat-count">' + done + ' / ' + (list.target||0) + '</span>' +
           '</div>';
       });
-      bodyHtml += '</div>';
+      headerHtml += '</div>';
+      // Quick-add buttons per bucket
+      let addHtml = '<div class="feed-add">';
+      lists.forEach((list, li) => {
+        const singular = (list.label||'').replace(/s$/,'');
+        addHtml += '<button class="btn btn-sm btn-outline" onclick="addMultiListItem(' + g.id + ',' + li + ')">+ ' + esc(singular) + '</button>';
+      });
+      addHtml += '</div>';
+      // Merge items from all lists, tag with their list index for updates
+      const merged = [];
+      lists.forEach((list, li) => {
+        (list.items || []).forEach(it => merged.push({ it, li, list }));
+      });
+      // Sort: items with date first (most recent first), undated at the end
+      merged.sort((a, b) => {
+        const ad = a.it.date || '', bd = b.it.date || '';
+        if (!ad && !bd) return 0;
+        if (!ad) return 1;
+        if (!bd) return -1;
+        return bd.localeCompare(ad);
+      });
+      let feedHtml = '<div class="feed-list">';
+      if (merged.length === 0) {
+        feedHtml += '<div class="feed-empty">Nothing logged yet — tap a button above to add your first outing.</div>';
+      } else {
+        merged.forEach(({ it, li, list }) => {
+          const namePh = list.key === 'events' ? 'Event name' : 'Restaurant name';
+          const locPh = list.key === 'events' ? 'Spot / venue' : 'Neighborhood';
+          feedHtml += '<div class="feed-row ' + (it.done?'checked':'') + '" data-bucket="' + esc(list.key||'') + '">' +
+            '<div class="feed-row-main">' +
+              '<input type="checkbox" ' + (it.done?'checked':'') + ' onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'done\',this.checked)">' +
+              '<span class="feed-badge feed-badge-' + esc(list.key||'') + '" title="' + esc(list.label||'') + '">' + esc(list.icon||'') + '</span>' +
+              '<input type="text" class="feed-name" value="' + esc(it.name||'') + '" placeholder="' + esc(namePh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
+              '<input type="date" class="feed-date" value="' + esc(it.date||'') + '" onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'date\',this.value)">' +
+              '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')" title="Delete">&times;</button>' +
+            '</div>' +
+            '<input type="text" class="feed-loc" value="' + esc(it.location||'') + '" placeholder="' + esc(locPh) + ' (optional)" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'location\',this.value)">' +
+          '</div>';
+        });
+      }
+      feedHtml += '</div>';
+      bodyHtml = '<div class="feed-tracker">' + headerHtml + addHtml + feedHtml + '</div>';
     } else {
       const clItems = g.checklistItems || [];
       const done = clItems.filter(ci => ci.done).length;
@@ -3946,15 +3952,19 @@ function updateLogStart(goalId, value) {
   save(); renderGoals();
 }
 
-// WORKOUTS goal helpers
-function adjustWorkoutWeek(goalId, weekNum, delta) {
+// WORKOUTS goal helpers — single session counter
+function adjustSessionCount(goalId, delta) {
   const g = state.goals.find(x => x.id === goalId);
   if (!g) return;
-  if (!g.workoutData) g.workoutData = {};
-  const cur = g.workoutData[weekNum] || 0;
-  const next = Math.max(0, Math.min((g.workoutMax||5) + 2, cur + delta));
-  if (next === 0) delete g.workoutData[weekNum];
-  else g.workoutData[weekNum] = next;
+  const cur = g.sessionCount || 0;
+  g.sessionCount = Math.max(0, cur + delta);
+  save(); renderGoals();
+}
+function updateSessionTarget(goalId, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g) return;
+  const v = parseInt(value, 10);
+  if (!isNaN(v) && v > 0) g.sessionTarget = v;
   save(); renderGoals();
 }
 
