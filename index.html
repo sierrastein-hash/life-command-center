@@ -709,7 +709,9 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 }
 .goal-card .goal-percent { font-size:13px; font-weight:600; color:var(--terra); margin-bottom:4px; }
 /* (milestones system removed — replaced by checklist goal type) */
-.goal-card .goal-actions { display:flex; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid var(--border); }
+.goal-card .goal-actions { display:flex; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid var(--border); justify-content:flex-end; }
+.btn-goal-delete { background:none; border:none; color:var(--text-faint); font-size:11px; font-family:'DM Sans',sans-serif; cursor:pointer; padding:4px 8px; border-radius:4px; opacity:0.6; transition:all 0.15s; }
+.btn-goal-delete:hover { color:var(--rose); opacity:1; background:rgba(184,116,112,0.08); }
 
 /* Enhanced Goal Cards */
 .goal-card.focused { border-left:4px solid var(--gold); background:linear-gradient(135deg, var(--card) 0%, rgba(122,150,104,0.04) 100%); }
@@ -2186,7 +2188,7 @@ function migrateRoutines(p) {
 function migrateGoals(p) {
   if (!p.goals) p.goals = [];
   // Force reload goals from defaults if version is outdated
-  if ((p._goalVersion || 0) < 8) {
+  if ((p._goalVersion || 0) < 9) {
     const ds = defaultState();
     // Preserve user-entered data where possible
     const oldGoalMap = {};
@@ -2272,7 +2274,7 @@ function migrateGoals(p) {
       if (old.why) ng.why = old.why;
       return ng;
     });
-    p._goalVersion = 8;
+    p._goalVersion = 9;
     if (p.nextId < 213) p.nextId = 213;
     // Ensure sprint structure
     if (!p.sprint) p.sprint = ds.sprint;
@@ -3860,7 +3862,7 @@ function renderGoals() {
       bodyHtml +
       habitsHtml +
       '<div class="goal-actions">' +
-      '<button class="btn btn-sm btn-outline" onclick="deleteGoal(' + g.id + ')">Delete</button></div>' +
+      '<button class="btn-goal-delete" onclick="deleteGoal(' + g.id + ')" title="Delete goal (requires typed confirmation)">Delete goal</button></div>' +
       '</div>';
   }).join('');
 
@@ -4143,7 +4145,19 @@ function editGoalWhy(goalId, el) {
 }
 
 function deleteGoal(id) {
-  state.goals = state.goals.filter(g => g.id !== id);
+  const g = state.goals.find(x => x.id === id);
+  if (!g) return;
+  // Two-step confirmation: type the exact title (case-insensitive) to confirm
+  const typed = prompt(
+    'Delete this goal permanently?\n\n"' + g.title + '"\n\n' +
+    'This cannot be undone. To confirm, type the goal title exactly:'
+  );
+  if (typed === null) return; // cancelled
+  if (typed.trim().toLowerCase() !== g.title.trim().toLowerCase()) {
+    alert('Title did not match. Goal not deleted.');
+    return;
+  }
+  state.goals = state.goals.filter(x => x.id !== id);
   save(); renderGoals();
 }
 
