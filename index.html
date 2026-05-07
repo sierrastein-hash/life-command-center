@@ -830,6 +830,8 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .log-stat-val { font-size:16px; font-weight:600; color:var(--terra); font-family:'Playfair Display',serif; }
 .log-rows { display:flex; flex-direction:column; gap:4px; margin-bottom:8px; }
 .log-row { display:grid; grid-template-columns:auto 90px 1fr auto; gap:6px; align-items:center; padding:4px; border-radius:4px; }
+.log-money .log-row { grid-template-columns:auto auto 90px 1fr auto; }
+.log-currency { font-size:13px; color:var(--terra); font-weight:600; }
 .log-row:hover { background:var(--surface); }
 .log-row input { padding:4px 6px; border:1px solid var(--border); border-radius:4px; font-size:12px; font-family:'DM Sans',sans-serif; background:var(--card); }
 .log-row input[type="date"] { width:auto; }
@@ -837,23 +839,32 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .log-row .chip-x:hover { color:var(--plum); }
 .log-add-btn { font-size:11px; }
 
-/* WEEKS goal — week-of-program tracker (Sad to Savage) */
-.weeks-tracker { margin:12px 0; padding:14px; background:var(--surface); border-radius:10px; }
-.weeks-headline { text-align:center; margin-bottom:14px; }
-.weeks-current { font-size:18px; color:var(--text-mid); font-family:'DM Sans',sans-serif; }
-.weeks-current strong { font-size:30px; color:var(--terra); font-family:'Playfair Display',serif; font-weight:700; }
-.weeks-done { font-size:20px; font-weight:700; color:var(--sage); font-family:'Playfair Display',serif; }
-.weeks-bar { display:flex; gap:3px; flex-wrap:wrap; margin-bottom:14px; justify-content:center; }
-.wb-cell { width:26px; height:26px; border-radius:6px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:var(--text-faint); transition:all 0.15s; }
-.wb-cell.done { background:var(--terra); border-color:var(--terra); color:var(--card); }
-.wb-cell.current { background:var(--terra-glow); border-color:var(--terra); color:var(--terra); animation:pulseRing 2s ease-in-out infinite; }
-@keyframes pulseRing { 0%,100% { box-shadow:0 0 0 0 rgba(184,114,90,0.5); } 50% { box-shadow:0 0 0 4px rgba(184,114,90,0); } }
-.weeks-controls { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:10px; }
-.weeks-controls .btn { font-size:13px; padding:8px 14px; }
-.weeks-meta { text-align:center; font-size:11px; color:var(--text-faint); }
-.weeks-meta strong { color:var(--terra); font-weight:600; }
+/* WORKOUTS goal — 18 weeks × N checkboxes per week (Sad to Savage) */
+.ws-tracker { margin:12px 0; padding:14px; background:var(--surface); border-radius:10px; }
+.ws-headline { text-align:center; margin-bottom:14px; }
+.ws-current { font-size:16px; color:var(--text-mid); font-family:'DM Sans',sans-serif; margin-bottom:4px; }
+.ws-current strong { font-size:24px; color:var(--terra); font-family:'Playfair Display',serif; font-weight:700; }
+.ws-done { font-size:20px; font-weight:700; color:var(--sage); font-family:'Playfair Display',serif; margin-bottom:4px; }
+.ws-stats { font-size:11px; color:var(--text-faint); }
+.ws-stats strong { color:var(--terra); font-weight:600; }
+.ws-grid { display:flex; flex-direction:column; gap:4px; margin-bottom:10px; }
+.ws-row { display:flex; align-items:center; gap:10px; padding:6px 10px; border-radius:6px; background:var(--card); border:1px solid var(--border-light); transition:all 0.15s; }
+.ws-row.on-target { background:rgba(184,114,90,0.06); border-color:var(--terra); }
+.ws-row.full { background:var(--terra-glow); border-color:var(--terra); }
+.ws-row.is-current { box-shadow:0 0 0 2px rgba(184,114,90,0.2); }
+.ws-week-label { font-size:11px; font-weight:600; color:var(--text-mid); width:54px; flex-shrink:0; }
+.ws-row.on-target .ws-week-label { color:var(--terra); }
+.ws-dots { display:flex; gap:6px; flex:1; }
+.ws-dot { width:22px; height:22px; border-radius:50%; border:2px solid var(--border); background:var(--surface); cursor:pointer; padding:0; transition:all 0.12s; }
+.ws-dot:hover { border-color:var(--terra); transform:scale(1.1); }
+.ws-dot.checked { background:var(--terra); border-color:var(--terra); }
+.ws-dot.checked:hover { background:var(--terra-dim); }
+.ws-row-count { font-size:11px; color:var(--text-faint); font-weight:600; width:28px; text-align:right; flex-shrink:0; font-variant-numeric:tabular-nums; }
+.ws-row.on-target .ws-row-count { color:var(--terra); }
+.ws-meta { text-align:center; font-size:11px; color:var(--text-faint); padding-top:8px; border-top:1px solid var(--border); }
 .weeks-target { width:42px; padding:2px 4px; border:1px solid transparent; border-radius:4px; font-size:11px; font-family:'DM Sans',sans-serif; background:transparent; color:var(--text-mid); text-align:center; }
 .weeks-target:hover, .weeks-target:focus { border-color:var(--border); background:var(--card); outline:none; }
+@media (max-width:600px) { .ws-week-label { width:46px; } .ws-dot { width:24px; height:24px; } }
 
 /* MONTHS goal — tri-state cells */
 .months-tracker { margin:12px 0; }
@@ -905,6 +916,23 @@ h1,h2,h3,h4,.tab-btn,.modal-title,.card-title,.logo,.day-name,.backlog-title {
 .room-add input::placeholder { color:var(--text-faint); }
 .room-add input:focus { border-color:var(--terra); outline:none; }
 .rooms-add-btn { width:100%; font-size:12px; margin-top:4px; }
+
+/* DENVER quarter sections */
+.quarters-stack { display:flex; flex-direction:column; gap:10px; }
+.quarter-section { background:var(--surface); border:1px solid var(--border-light); border-radius:8px; padding:10px 12px; }
+.quarter-section.current-quarter { border-color:var(--terra); background:rgba(184,114,90,0.04); }
+.quarter-section-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.quarter-section-label { font-size:13px; font-weight:700; font-family:'Playfair Display',serif; color:var(--text); flex-shrink:0; }
+.quarter-section.current-quarter .quarter-section-label { color:var(--terra); }
+.quarter-section-stats { flex:1; display:flex; gap:10px; font-size:11px; color:var(--text-faint); }
+.quarter-section-stats span { display:inline-flex; align-items:center; gap:3px; }
+.quarter-section-add { display:flex; gap:4px; flex-shrink:0; }
+.qs-add-btn { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:4px 8px; font-size:13px; cursor:pointer; transition:all 0.15s; color:var(--text-mid); }
+.qs-add-btn:hover { border-color:var(--terra); background:var(--terra-glow); }
+.quarter-empty { font-size:11px; color:var(--text-faint); font-style:italic; text-align:center; padding:8px; }
+.quarter-rows { display:flex; flex-direction:column; gap:5px; }
+.feed-quarter { font-size:10px; padding:3px 4px; border:1px solid var(--border); border-radius:4px; background:var(--surface); color:var(--text-faint); font-family:'DM Sans',sans-serif; flex-shrink:0; }
+.feed-quarter:focus { border-color:var(--terra); outline:none; }
 
 /* FEED goal (multiList rendered as chronological feed — Denver) */
 .feed-tracker { margin:12px 0; }
@@ -2100,8 +2128,8 @@ function defaultState() {
       { id:201, title:'Average 8 Hours of Sleep', category:'health', goalType:'mom', isActive:false, linkedHabits:[109], momData:{}, momUnit:'hrs avg', momTarget:8 },
       { id:202, title:'10k Steps Monthly Average', category:'health', goalType:'mom', isActive:false, linkedHabits:[], momData:{}, momUnit:'steps', momTarget:10000 },
 
-      // WORKOUTS goal — week-of-program counter
-      { id:210, title:'Finish Sad to Savage Course', category:'growth', goalType:'workouts', isActive:false, linkedHabits:[], weeksTotal:18, weeksComplete:0 },
+      // WORKOUTS goal — N weeks × M workout checkboxes per week
+      { id:210, title:'Finish Sad to Savage Course', category:'growth', goalType:'workouts', isActive:false, linkedHabits:[], weeksTotal:18, workoutsPerWeek:5, weekData:{} },
 
       // MONTHS goal — 12-month tri-state tracker (done/missed/blank)
       { id:211, title:'Build Financial Review Habit', category:'money', goalType:'months', isActive:false, linkedHabits:[111], monthsData:{} },
@@ -2238,7 +2266,7 @@ function migrateRoutines(p) {
 function migrateGoals(p) {
   if (!p.goals) p.goals = [];
   // Force reload goals from defaults if version is outdated
-  if ((p._goalVersion || 0) < 12) {
+  if ((p._goalVersion || 0) < 13) {
     const ds = defaultState();
     // Preserve user-entered data where possible
     const oldGoalMap = {};
@@ -2259,22 +2287,42 @@ function migrateGoals(p) {
         }
       }
       if (ng.goalType === 'workouts') {
-        // Carry forward existing weeks data
-        if (typeof old.weeksComplete === 'number') ng.weeksComplete = old.weeksComplete;
+        // Carry forward weekData if it already exists in the new shape
+        if (old.weekData && typeof old.weekData === 'object' && !Array.isArray(old.weekData)) {
+          // Detect new shape (values are arrays of booleans) vs old shape (values are numbers)
+          const sample = Object.values(old.weekData)[0];
+          if (Array.isArray(sample)) {
+            ng.weekData = old.weekData;
+          } else if (typeof sample === 'number') {
+            // Old per-week count → fill that many checkboxes for each week
+            ng.weekData = {};
+            const perWeek = ng.workoutsPerWeek || 5;
+            Object.entries(old.weekData).forEach(([k, n]) => {
+              const ct = Math.min(perWeek, parseInt(n,10) || 0);
+              if (ct > 0) ng.weekData[k] = Array.from({length: perWeek}, (_, i) => i < ct);
+            });
+          }
+        }
         if (typeof old.weeksTotal === 'number' && old.weeksTotal > 0) ng.weeksTotal = old.weeksTotal;
-        // Carry forward old sessionCount: divide by ~4/week to estimate weeks complete
-        if (!ng.weeksComplete && typeof old.sessionCount === 'number' && old.sessionCount > 0) {
-          ng.weeksComplete = Math.min(ng.weeksTotal||18, Math.floor(old.sessionCount / 4));
+        if (typeof old.workoutsPerWeek === 'number' && old.workoutsPerWeek > 0) ng.workoutsPerWeek = old.workoutsPerWeek;
+        // Convert old weeksComplete: mark weeks 1..N as fully checked
+        if (!Object.keys(ng.weekData||{}).length && typeof old.weeksComplete === 'number' && old.weeksComplete > 0) {
+          ng.weekData = {};
+          const perWeek = ng.workoutsPerWeek || 5;
+          for (let w = 1; w <= old.weeksComplete; w++) ng.weekData[w] = new Array(perWeek).fill(true);
         }
-        // Roll up much-older per-week workoutData
-        if (!ng.weeksComplete && old.workoutData && typeof old.workoutData === 'object') {
-          const keys = Object.keys(old.workoutData).map(k => parseInt(k,10)).filter(n => !isNaN(n));
-          ng.weeksComplete = Math.min(ng.weeksTotal||18, keys.length > 0 ? Math.max(...keys) : 0);
+        // Convert older sessionCount → spread across weeks at perWeek/week
+        if (!Object.keys(ng.weekData||{}).length && typeof old.sessionCount === 'number' && old.sessionCount > 0) {
+          ng.weekData = {};
+          const perWeek = ng.workoutsPerWeek || 5;
+          let remaining = old.sessionCount;
+          for (let w = 1; w <= (ng.weeksTotal||18) && remaining > 0; w++) {
+            const ct = Math.min(perWeek, remaining);
+            ng.weekData[w] = Array.from({length: perWeek}, (_, i) => i < ct);
+            remaining -= ct;
+          }
         }
-        // Backfill from older phased shape
-        if (!ng.weeksComplete && old.goalType === 'phased' && Array.isArray(old.phases)) {
-          ng.weeksComplete = Math.min(ng.weeksTotal||18, old.phases.reduce((s,ph) => s + ((ph.completed||[]).length), 0));
-        }
+        if (!ng.weekData) ng.weekData = {};
       }
       if (ng.goalType === 'months') {
         ng.monthsData = (old.monthsData && typeof old.monthsData === 'object') ? old.monthsData : {};
@@ -2348,7 +2396,7 @@ function migrateGoals(p) {
       if (old.why) ng.why = old.why;
       return ng;
     });
-    p._goalVersion = 12;
+    p._goalVersion = 13;
     if (p.nextId < 213) p.nextId = 213;
     // Ensure sprint structure
     if (!p.sprint) p.sprint = ds.sprint;
@@ -2371,11 +2419,24 @@ function migrateGoals(p) {
       g.logEntries.forEach(e => { if (!e.id) e.id = 'le-' + Math.random().toString(36).slice(2,9); });
     }
     if (g.goalType === 'workouts') {
-      if (typeof g.weeksComplete !== 'number') g.weeksComplete = 0;
       if (typeof g.weeksTotal !== 'number' || g.weeksTotal <= 0) g.weeksTotal = 18;
-      if (g.weeksComplete > g.weeksTotal) g.weeksComplete = g.weeksTotal;
+      if (typeof g.workoutsPerWeek !== 'number' || g.workoutsPerWeek <= 0) g.workoutsPerWeek = 5;
+      if (!g.weekData || typeof g.weekData !== 'object' || Array.isArray(g.weekData)) g.weekData = {};
+      // Normalize each week's array length to workoutsPerWeek
+      Object.keys(g.weekData).forEach(k => {
+        let arr = g.weekData[k];
+        if (!Array.isArray(arr)) {
+          // Number → array
+          const n = parseInt(arr,10) || 0;
+          arr = Array.from({length: g.workoutsPerWeek}, (_, i) => i < n);
+        }
+        // Pad/trim
+        while (arr.length < g.workoutsPerWeek) arr.push(false);
+        if (arr.length > g.workoutsPerWeek) arr = arr.slice(0, g.workoutsPerWeek);
+        g.weekData[k] = arr;
+      });
       // Cleanup obsolete fields
-      delete g.sessionCount; delete g.sessionTarget;
+      delete g.weeksComplete; delete g.sessionCount; delete g.sessionTarget;
       delete g.workoutData; delete g.workoutWeeks; delete g.workoutMin; delete g.workoutMax;
     }
     if (g.goalType === 'months' && (!g.monthsData || typeof g.monthsData !== 'object')) g.monthsData = {};
@@ -2389,11 +2450,13 @@ function migrateGoals(p) {
     }
     if (g.goalType === 'multiList') {
       if (!Array.isArray(g.lists)) g.lists = [];
+      const currentQuarter = Math.floor(new Date().getMonth() / 3) + 1;
       g.lists.forEach(l => {
         if (!Array.isArray(l.items)) l.items = [];
         l.items.forEach(it => {
           if (!it.id) it.id = 'mi-' + Math.random().toString(36).slice(2,9);
           if (it.location === undefined) it.location = '';
+          if (!it.quarter || it.quarter < 1 || it.quarter > 4) it.quarter = currentQuarter;
         });
       });
     }
@@ -3053,7 +3116,7 @@ function renderProjects() {
           pct = g.logTarget > 0 ? Math.round((sum/g.logTarget)*100) : 0;
         }
       }
-      else if (g.goalType === 'workouts') { const d = g.weeksComplete||0, t = g.weeksTotal||18; pct = t > 0 ? Math.round((d/t)*100) : 0; }
+      else if (g.goalType === 'workouts') { const t = g.weeksTotal||18, d = g.weekData||{}; let h = 0; for (let i=1;i<=t;i++) if (((d[i]||[]).filter(Boolean).length) >= 3) h++; pct = t > 0 ? Math.round((h/t)*100) : 0; }
       else if (g.goalType === 'months') { const data = g.monthsData||{}, nm = new Date().getMonth(); let el=0,dn=0; for (let i=0;i<=nm;i++){ const k = new Date().getFullYear()+'-'+String(i+1).padStart(2,'0'); el++; if (data[k]==='done') dn++; } pct = el>0 ? Math.round((dn/el)*100) : 0; }
       else if (g.goalType === 'multiList') { const ls = g.lists||[]; let t=0,c=0; ls.forEach(l => { t += l.target||0; c += (l.items||[]).length; }); pct = t>0 ? Math.round((Math.min(c,t)/t)*100) : 0; }
       else if (g.goalType === 'rooms') { const rs = g.rooms||[]; let t=0,d=0; rs.forEach(r => { const ts = r.tasks||[]; t += ts.length; d += ts.filter(x=>x.done).length; }); pct = t > 0 ? Math.round((d/t)*100) : 0; }
@@ -3521,8 +3584,9 @@ function renderGoals() {
           completedItems += entries.reduce((s,e) => s + (parseFloat(e.value)||0), 0);
         }
       } else if (gType === 'workouts') {
-        totalItems += g.weeksTotal || 18;
-        completedItems += Math.min(g.weeksTotal || 18, g.weeksComplete || 0);
+        const t = g.weeksTotal||18, d = g.weekData||{};
+        totalItems += t;
+        for (let i = 1; i <= t; i++) if (((d[i]||[]).filter(Boolean).length) >= 3) completedItems++;
       } else if (gType === 'months') {
         totalItems += 12;
         Object.values(g.monthsData||{}).forEach(v => { if (v === 'done') completedItems++; });
@@ -3559,7 +3623,7 @@ function renderGoals() {
       else if (gType === 'checklist' && (g.checklistItems||[]).some(ci => ci.done)) goalsOnTrack++;
       else if (gType === 'mom' && Object.keys(g.momData||{}).length > 0) goalsOnTrack++;
       else if (gType === 'log' && (g.logEntries||[]).length > 0) goalsOnTrack++;
-      else if (gType === 'workouts' && (g.weeksComplete||0) > 0) goalsOnTrack++;
+      else if (gType === 'workouts' && Object.keys(g.weekData||{}).length > 0) goalsOnTrack++;
       else if (gType === 'months' && Object.values(g.monthsData||{}).some(v => v === 'done')) goalsOnTrack++;
       else if (gType === 'multiList' && (g.lists||[]).some(l => (l.items||[]).length > 0)) goalsOnTrack++;
       else if (gType === 'rooms' && (g.rooms||[]).some(r => (r.tasks||[]).some(t => t.done))) goalsOnTrack++;
@@ -3651,9 +3715,15 @@ function renderGoals() {
         pct = g.logTarget > 0 ? Math.round((sum / g.logTarget) * 100) : 0;
       }
     } else if (gType === 'workouts') {
-      const done = g.weeksComplete || 0;
       const total = g.weeksTotal || 18;
-      pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      const minPerWeek = 3;
+      const data = g.weekData || {};
+      let weeksHit = 0;
+      for (let w = 1; w <= total; w++) {
+        const ct = (data[w]||[]).filter(Boolean).length;
+        if (ct >= minPerWeek) weeksHit++;
+      }
+      pct = total > 0 ? Math.round((weeksHit / total) * 100) : 0;
     } else if (gType === 'months') {
       const data = g.monthsData || {};
       const yr = new Date().getFullYear();
@@ -3733,11 +3803,13 @@ function renderGoals() {
     } else if (gType === 'log') {
       const entries = (g.logEntries || []).slice().sort((a,b) => (a.date||'').localeCompare(b.date||''));
       const isDesc = g.logMode === 'descending';
+      const isMoney = g.logMode === 'cumulative';
       const start = g.logStart || 0;
       const latest = entries.length > 0 ? entries[entries.length-1].value : start;
       const sum = entries.reduce((s,e) => s + (parseFloat(e.value)||0), 0);
       const target = g.logTarget || 0;
       const unit = g.logUnit || '';
+      const fmtMoney = (n) => '$' + (Math.round((parseFloat(n)||0) * 100) / 100).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
       // Header summary
       let summaryHtml;
       if (isDesc) {
@@ -3750,52 +3822,65 @@ function renderGoals() {
           '</div>';
       } else {
         summaryHtml = '<div class="log-summary">' +
-          '<div class="log-stat"><label>Total</label><div class="log-stat-val">$' + sum.toLocaleString() + '</div></div>' +
-          '<div class="log-stat"><label>Target</label><div class="log-stat-val">$' + target.toLocaleString() + '</div></div>' +
+          '<div class="log-stat"><label>Total</label><div class="log-stat-val">' + fmtMoney(sum) + '</div></div>' +
+          '<div class="log-stat"><label>Target</label><div class="log-stat-val">' + fmtMoney(target) + '</div></div>' +
           '<div class="log-stat"><label>Entries</label><div class="log-stat-val">' + entries.length + '</div></div>' +
           '</div>';
       }
       // Entry rows (newest first for display)
-      const rowsHtml = entries.slice().reverse().map(e =>
-        '<div class="log-row">' +
+      const rowsHtml = entries.slice().reverse().map(e => {
+        const valStr = (parseFloat(e.value)||0) === 0 ? '' : (isMoney ? (Math.round((parseFloat(e.value)||0) * 100) / 100).toFixed(2) : String(e.value));
+        return '<div class="log-row">' +
           '<input type="date" value="' + esc(e.date||'') + '" onchange="updateLogEntry(' + g.id + ',\'' + esc(e.id) + '\',\'date\',this.value)">' +
-          '<input type="number" step="any" value="' + esc(String(e.value||'')) + '" onchange="updateLogEntry(' + g.id + ',\'' + esc(e.id) + '\',\'value\',this.value)">' +
+          (isMoney ? '<span class="log-currency">$</span>' : '') +
+          '<input type="number" step="' + (isMoney?'0.01':'any') + '" value="' + esc(valStr) + '" onchange="updateLogEntry(' + g.id + ',\'' + esc(e.id) + '\',\'value\',this.value)">' +
           '<input type="text" placeholder="' + (isDesc?'note':'source') + '" value="' + esc(e.note||'') + '" onchange="updateLogEntry(' + g.id + ',\'' + esc(e.id) + '\',\'note\',this.value)">' +
           '<button class="chip-x" onclick="deleteLogEntry(' + g.id + ',\'' + esc(e.id) + '\')">&times;</button>' +
-        '</div>'
-      ).join('');
-      bodyHtml = '<div class="log-tracker">' + summaryHtml +
+        '</div>';
+      }).join('');
+      bodyHtml = '<div class="log-tracker' + (isMoney?' log-money':'') + '">' + summaryHtml +
         '<div class="log-rows">' + rowsHtml + '</div>' +
         '<button class="btn btn-sm btn-outline log-add-btn" onclick="addLogEntry(' + g.id + ')">+ ' + esc(g.logEntryLabel||'Entry') + '</button>' +
         '</div>';
     } else if (gType === 'workouts') {
-      const done = g.weeksComplete || 0;
       const total = g.weeksTotal || 18;
-      const onWeek = Math.min(done + 1, total); // currently working on this week
-      const isFinished = done >= total;
-      bodyHtml = '<div class="weeks-tracker">' +
-        '<div class="weeks-headline">' +
-          (isFinished
-            ? '<div class="weeks-done">🎉 Course complete!</div>'
-            : '<div class="weeks-current">Currently on <strong>Week ' + onWeek + '</strong> of ' + total + '</div>'
+      const perWeek = g.workoutsPerWeek || 5;
+      const minPerWeek = 3; // weeks at this count or higher are "on target"
+      const data = g.weekData || {};
+      let totalChecks = 0, weeksHit = 0;
+      let firstIncompleteWeek = total + 1;
+      for (let w = 1; w <= total; w++) {
+        const arr = data[w] || [];
+        const ct = arr.filter(Boolean).length;
+        totalChecks += ct;
+        if (ct >= minPerWeek) weeksHit++;
+        if (firstIncompleteWeek > total && ct < perWeek) firstIncompleteWeek = w;
+      }
+      bodyHtml = '<div class="ws-tracker">' +
+        '<div class="ws-headline">' +
+          (firstIncompleteWeek > total
+            ? '<div class="ws-done">🎉 Course complete!</div>'
+            : '<div class="ws-current">Currently on <strong>Week ' + firstIncompleteWeek + '</strong> of ' + total + '</div>'
           ) +
+          '<div class="ws-stats"><strong>' + totalChecks + '</strong> workouts · <strong>' + weeksHit + '</strong> / ' + total + ' weeks at target (≥' + minPerWeek + ')</div>' +
         '</div>' +
-        '<div class="weeks-bar">' +
-          Array.from({length: total}, (_, i) => {
-            const wn = i + 1;
-            const isDone = wn <= done;
-            const isCur = wn === onWeek && !isFinished;
-            return '<div class="wb-cell ' + (isDone?'done':'') + ' ' + (isCur?'current':'') + '" title="Week ' + wn + (isDone?' (complete)':(isCur?' (current)':''))+'">' + wn + '</div>';
-          }).join('') +
-        '</div>' +
-        '<div class="weeks-controls">' +
-          '<button class="btn btn-sm btn-outline" onclick="adjustWeeksComplete(' + g.id + ',-1)" ' + (done <= 0 ? 'disabled' : '') + '>← Undo last week</button>' +
-          (isFinished
-            ? ''
-            : '<button class="btn btn-sm btn-primary" onclick="adjustWeeksComplete(' + g.id + ',1)">Complete Week ' + onWeek + ' →</button>'
-          ) +
-        '</div>' +
-        '<div class="weeks-meta"><strong>' + done + '</strong> / ' + total + ' weeks complete · target: <input type="number" class="weeks-target" value="' + total + '" min="1" onchange="updateWeeksTotal(' + g.id + ',this.value)"></div>' +
+        '<div class="ws-grid">';
+      for (let w = 1; w <= total; w++) {
+        const arr = data[w] || [];
+        const ct = arr.filter(Boolean).length;
+        const onTarget = ct >= minPerWeek;
+        const isFull = ct >= perWeek;
+        bodyHtml += '<div class="ws-row ' + (onTarget?'on-target':'') + ' ' + (isFull?'full':'') + ' ' + (w === firstIncompleteWeek?'is-current':'') + '">' +
+          '<div class="ws-week-label">Week ' + w + '</div>' +
+          '<div class="ws-dots">';
+        for (let i = 0; i < perWeek; i++) {
+          const checked = !!arr[i];
+          bodyHtml += '<button class="ws-dot ' + (checked?'checked':'') + '" onclick="toggleWorkoutDot(' + g.id + ',' + w + ',' + i + ')" title="Week ' + w + ' workout ' + (i+1) + '"></button>';
+        }
+        bodyHtml += '</div><div class="ws-row-count">' + ct + '/' + perWeek + '</div></div>';
+      }
+      bodyHtml += '</div>' +
+        '<div class="ws-meta">Target weeks: <input type="number" class="weeks-target" value="' + total + '" min="1" onchange="updateWeeksTotal(' + g.id + ',this.value)"> · workouts/week: <input type="number" class="weeks-target" value="' + perWeek + '" min="1" max="10" onchange="updateWorkoutsPerWeek(' + g.id + ',this.value)"></div>' +
         '</div>';
     } else if (gType === 'months') {
       const data = g.monthsData || {};
@@ -3900,7 +3985,8 @@ function renderGoals() {
         '</div>';
     } else if (gType === 'multiList') {
       const lists = g.lists || [];
-      // Header summary — counts per bucket (count = items in list)
+      const currentQuarter = Math.floor(new Date().getMonth() / 3) + 1; // 1..4
+      // Overall header with bucket counts
       let headerHtml = '<div class="feed-header">';
       lists.forEach(list => {
         const count = (list.items||[]).length;
@@ -3911,35 +3997,58 @@ function renderGoals() {
           '</div>';
       });
       headerHtml += '</div>';
-      // Quick-add buttons per bucket
-      let addHtml = '<div class="feed-add">';
+      // Build quarter buckets — every item has a quarter (1-4), defaulting to currentQuarter if missing
+      const quartersMap = { 1: [], 2: [], 3: [], 4: [] };
       lists.forEach((list, li) => {
-        const singular = (list.label||'').replace(/s$/,'');
-        addHtml += '<button class="btn btn-sm btn-outline" onclick="addMultiListItem(' + g.id + ',' + li + ')">+ ' + esc(singular) + '</button>';
-      });
-      addHtml += '</div>';
-      // Merge items from all lists, tag with their list index for updates
-      const merged = [];
-      lists.forEach((list, li) => {
-        (list.items || []).forEach(it => merged.push({ it, li, list }));
-      });
-      let feedHtml = '<div class="feed-list">';
-      if (merged.length === 0) {
-        feedHtml += '<div class="feed-empty">Nothing logged yet — tap a button above to add your first one.</div>';
-      } else {
-        merged.forEach(({ it, li, list }) => {
-          const namePh = list.key === 'events' ? 'Event name' : 'Restaurant name';
-          feedHtml += '<div class="feed-row" data-bucket="' + esc(list.key||'') + '">' +
-            '<div class="feed-row-main">' +
-              '<span class="feed-badge feed-badge-' + esc(list.key||'') + '" title="' + esc(list.label||'') + '">' + esc(list.icon||'') + '</span>' +
-              '<input type="text" class="feed-name" value="' + esc(it.name||'') + '" placeholder="' + esc(namePh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
-              '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')" title="Delete">&times;</button>' +
-            '</div>' +
-          '</div>';
+        (list.items || []).forEach(it => {
+          const q = (it.quarter && it.quarter >= 1 && it.quarter <= 4) ? it.quarter : currentQuarter;
+          quartersMap[q].push({ it, li, list });
         });
-      }
-      feedHtml += '</div>';
-      bodyHtml = '<div class="feed-tracker">' + headerHtml + addHtml + feedHtml + '</div>';
+      });
+      let quartersHtml = '<div class="quarters-stack">';
+      [1,2,3,4].forEach(q => {
+        const rows = quartersMap[q];
+        // Per-quarter counts
+        const evCount = rows.filter(r => r.list.key === 'events').length;
+        const rsCount = rows.filter(r => r.list.key === 'restaurants').length;
+        const isCurrent = q === currentQuarter;
+        quartersHtml += '<div class="quarter-section ' + (isCurrent?'current-quarter':'') + '">' +
+          '<div class="quarter-section-head">' +
+            '<span class="quarter-section-label">Q' + q + (isCurrent?' · now':'') + '</span>' +
+            '<span class="quarter-section-stats">' +
+              (evCount > 0 ? '<span>🎟️ ' + evCount + '</span>' : '') +
+              (rsCount > 0 ? '<span>🍽️ ' + rsCount + '</span>' : '') +
+            '</span>' +
+            '<div class="quarter-section-add">';
+        lists.forEach((list, li) => {
+          const singular = (list.label||'').replace(/s$/,'');
+          quartersHtml += '<button class="qs-add-btn" onclick="addMultiListItemForQuarter(' + g.id + ',' + li + ',' + q + ')" title="Add ' + esc(singular) + ' to Q' + q + '">' + esc(list.icon||'') + ' +</button>';
+        });
+        quartersHtml += '</div></div>';
+        // Rows for this quarter
+        if (rows.length === 0) {
+          quartersHtml += '<div class="quarter-empty">— nothing yet —</div>';
+        } else {
+          quartersHtml += '<div class="quarter-rows">';
+          rows.forEach(({ it, li, list }) => {
+            const namePh = list.key === 'events' ? 'Event name' : 'Restaurant name';
+            quartersHtml += '<div class="feed-row" data-bucket="' + esc(list.key||'') + '">' +
+              '<div class="feed-row-main">' +
+                '<span class="feed-badge feed-badge-' + esc(list.key||'') + '" title="' + esc(list.label||'') + '">' + esc(list.icon||'') + '</span>' +
+                '<input type="text" class="feed-name" value="' + esc(it.name||'') + '" placeholder="' + esc(namePh) + '" onblur="updateMultiListItemSilent(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'name\',this.value)">' +
+                '<select class="feed-quarter" onchange="updateMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\',\'quarter\',parseInt(this.value,10))" title="Move to quarter">' +
+                  [1,2,3,4].map(qn => '<option value="' + qn + '"' + (qn===q?' selected':'') + '>Q' + qn + '</option>').join('') +
+                '</select>' +
+                '<button class="chip-x" onclick="deleteMultiListItem(' + g.id + ',' + li + ',\'' + esc(it.id) + '\')" title="Delete">&times;</button>' +
+              '</div>' +
+            '</div>';
+          });
+          quartersHtml += '</div>';
+        }
+        quartersHtml += '</div>';
+      });
+      quartersHtml += '</div>';
+      bodyHtml = '<div class="feed-tracker">' + headerHtml + quartersHtml + '</div>';
     } else {
       const clItems = g.checklistItems || [];
       const done = clItems.filter(ci => ci.done).length;
@@ -4069,8 +4178,12 @@ function updateLogEntry(goalId, entryId, field, value) {
   if (!g || !Array.isArray(g.logEntries)) return;
   const e = g.logEntries.find(x => x.id === entryId);
   if (!e) return;
-  if (field === 'value') e.value = parseFloat(value) || 0;
-  else e[field] = value;
+  if (field === 'value') {
+    let v = parseFloat(value) || 0;
+    // For money goals, round to 2 decimals
+    if (g.logMode === 'cumulative') v = Math.round(v * 100) / 100;
+    e.value = v;
+  } else e[field] = value;
   save(); renderGoals();
 }
 function deleteLogEntry(goalId, entryId) {
@@ -4086,13 +4199,17 @@ function updateLogStart(goalId, value) {
   save(); renderGoals();
 }
 
-// WORKOUTS goal helpers — week-of-program counter
-function adjustWeeksComplete(goalId, delta) {
+// WORKOUTS goal helpers — per-workout checkboxes per week
+function toggleWorkoutDot(goalId, weekNum, idx) {
   const g = state.goals.find(x => x.id === goalId);
   if (!g) return;
-  const cur = g.weeksComplete || 0;
-  const total = g.weeksTotal || 18;
-  g.weeksComplete = Math.max(0, Math.min(total, cur + delta));
+  if (!g.weekData) g.weekData = {};
+  const perWeek = g.workoutsPerWeek || 5;
+  if (!Array.isArray(g.weekData[weekNum])) g.weekData[weekNum] = new Array(perWeek).fill(false);
+  while (g.weekData[weekNum].length < perWeek) g.weekData[weekNum].push(false);
+  g.weekData[weekNum][idx] = !g.weekData[weekNum][idx];
+  // Cleanup: if the whole week is empty, drop the entry
+  if (!g.weekData[weekNum].some(Boolean)) delete g.weekData[weekNum];
   save(); renderGoals();
 }
 function updateWeeksTotal(goalId, value) {
@@ -4101,7 +4218,21 @@ function updateWeeksTotal(goalId, value) {
   const v = parseInt(value, 10);
   if (!isNaN(v) && v > 0) {
     g.weeksTotal = v;
-    if ((g.weeksComplete||0) > v) g.weeksComplete = v;
+    // Drop data beyond the new total
+    Object.keys(g.weekData||{}).forEach(k => { if (parseInt(k,10) > v) delete g.weekData[k]; });
+  }
+  save(); renderGoals();
+}
+function updateWorkoutsPerWeek(goalId, value) {
+  const g = state.goals.find(x => x.id === goalId);
+  if (!g) return;
+  const v = parseInt(value, 10);
+  if (!isNaN(v) && v >= 1 && v <= 10) {
+    g.workoutsPerWeek = v;
+    // Trim each week's array to match
+    Object.keys(g.weekData||{}).forEach(k => {
+      if (Array.isArray(g.weekData[k])) g.weekData[k] = g.weekData[k].slice(0, v);
+    });
   }
   save(); renderGoals();
 }
@@ -4189,10 +4320,18 @@ function deleteRoomTask(goalId, roomId, taskId) {
 
 // MULTILIST goal helpers
 function addMultiListItem(goalId, listIdx) {
+  const currentQuarter = Math.floor(new Date().getMonth() / 3) + 1;
+  return addMultiListItemForQuarter(goalId, listIdx, currentQuarter);
+}
+function addMultiListItemForQuarter(goalId, listIdx, quarter) {
   const g = state.goals.find(x => x.id === goalId);
   if (!g || !g.lists || !g.lists[listIdx]) return;
   if (!Array.isArray(g.lists[listIdx].items)) g.lists[listIdx].items = [];
-  g.lists[listIdx].items.push({ id: 'mi-' + Math.random().toString(36).slice(2,9), name:'', done:false, date:'' });
+  g.lists[listIdx].items.push({
+    id: 'mi-' + Math.random().toString(36).slice(2,9),
+    name: '',
+    quarter: (quarter >= 1 && quarter <= 4) ? quarter : (Math.floor(new Date().getMonth() / 3) + 1)
+  });
   save(); renderGoals();
 }
 function updateMultiListItem(goalId, listIdx, itemId, field, value) {
